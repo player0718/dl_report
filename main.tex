@@ -1,0 +1,59 @@
+\documentclass[11pt]{article}
+
+% --- Layout & typography ---------------------------------------------------
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{xcolor}
+
+% --- Math and units ---------------------------------------------------------
+\usepackage{amsmath,amssymb}
+
+% --- Floats, tables, figures -----------------------------------------------
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs}
+\usepackage{subcaption}
+
+% --- References & cross-refs -----------------------------------------------
+% Convention: natbib + plainnat. Use \citep{...} for parenthetical citations
+% and \citet{...} for textual citations. Cross-refs use \cref.
+\usepackage[round,authoryear]{natbib}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage[capitalize,noabbrev]{cleveref}
+
+% --- Draft reminders (plain text, no colored boxes) ------------------------
+\newcommand{\draftnote}[1]{#1}
+
+% --- Document --------------------------------------------------------------
+\title{Regularization Techniques for ViT on CIFAR-100:\\
+       A Comparative Study}
+
+% TODO: replace placeholder names with real names + matric numbers as required
+% by the AI6103 submission template. Order = section ownership order.
+\author{
+  Member 1 % Baseline (no regularization)
+  \and Member 2 % Weight Decay
+  \and Member 3 % Dropout
+  \and Member 4 % Data Augmentation
+  \and Member 5 % Label Smoothing + Early Stopping
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\input{sections/abstract}
+
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/methodology}
+\input{sections/experiments}
+\input{sections/comparison}
+\input{sections/conclusion}
+\input{sections/contributions}
+
+% --- Bibliography ----------------------------------------------------------
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

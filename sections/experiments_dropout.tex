@@ -1,0 +1,30 @@
+\subsubsection{Dropout Results}
+\label{sec:dropout}
+
+% Owner: Member 3. Bullet-level skeleton; expand to ~1 page.
+
+\paragraph{Experiment focus.}
+We evaluate the dropout variants defined in
+\cref{sec:method:dropout} under the shared protocol of
+\cref{sec:exp:training,sec:exp:eval}. Only the dropout placement and
+rate vary across runs.
+
+\paragraph{Results.}
+\draftnote{Expand this subsection into prose using the checklist below.}
+\begin{itemize}
+  \item Results table (best val acc / test acc / train--val gap /
+        train time per dropout rate). Mirror the column layout of
+        \cref{tab:wd}.
+  \item Learning curves figure (overlay train/val acc per rate).
+  \item Convergence-speed analysis: how does training-loss-vs-epoch
+        change with $p$?
+\end{itemize}
+
+\paragraph{Discussion.}
+\label{sec:dropout:discussion}
+\draftnote{Answer the three Member 3 questions in short paragraphs.}
+\begin{enumerate}
+  \item Does dropout help on this task?
+  \item Small vs large dropout: which is more reasonable?
+  \item How much does dropout slow convergence?
+\end{enumerate}

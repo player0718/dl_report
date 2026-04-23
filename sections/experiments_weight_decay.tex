@@ -1,0 +1,110 @@
+\subsubsection{Weight Decay Results}
+\label{sec:wd}
+
+% Owner: Member 2. Target 1.5--2 pages.
+
+\paragraph{Experiment focus.}
+This subsection reports the results of the weight-decay sweep defined in
+\cref{sec:method:wd}, evaluated under the shared protocol of
+\cref{sec:exp:training,sec:exp:eval}. The only variable that changes is
+the AdamW decoupled weight-decay coefficient $\lambda$.
+
+\paragraph{Aggregate numbers.}
+\Cref{tab:wd} reports best validation accuracy, final test accuracy,
+the train--val gap at the best-val epoch, and wall-clock training
+time for each weight-decay setting.
+
+\input{tables/wd_results}
+
+\paragraph{Learning curves.}
+\Cref{fig:wd-curves} overlays training and validation loss and
+accuracy across all five settings, sharing axes with
+\cref{fig:baseline-curves} for direct comparison.
+
+\begin{figure}[t]
+  \centering
+  % \includegraphics[width=0.9\linewidth]{wd_curves.png}  % uncomment when figure is ready
+  \fbox{\rule{0pt}{4cm}\rule{0.85\linewidth}{0pt}}
+  \caption{Training and validation curves across weight-decay
+  strengths $\lambda \in \{0, 10^{-4}, 10^{-2}, 5\times 10^{-2},
+  10^{-1}\}$. \draftnote{Drop \texttt{figures/wd\_curves.png} and
+  replace the \texttt{\textbackslash fbox} placeholder with the
+  commented \texttt{\textbackslash includegraphics} above. One
+  figure, four subplots (train loss, val loss, train acc, val acc),
+  one line per $\lambda$, color-coded.}}
+  \label{fig:wd-curves}
+\end{figure}
+
+\paragraph{Train--val gap.}
+\Cref{fig:wd-gap} plots the train--val accuracy gap as a function of
+training epoch for each $\lambda$. A flat or shrinking gap at large
+$\lambda$ is direct evidence that weight decay is constraining
+memorization rather than just trading capacity for regularization.
+
+\begin{figure}[t]
+  \centering
+  % \includegraphics[width=0.7\linewidth]{wd_gap.png}  % uncomment when figure is ready
+  \fbox{\rule{0pt}{4cm}\rule{0.65\linewidth}{0pt}}
+  \caption{Train--val accuracy gap over training for each weight-decay
+  strength. \draftnote{Drop \texttt{figures/wd\_gap.png} and swap
+  in the commented \texttt{\textbackslash includegraphics} above. The
+  caption should state the punch line: e.g. ``$\lambda=10^{-2}$
+  reduces the final-epoch gap by X percentage points relative to
+  $\lambda=0$.''}}
+  \label{fig:wd-gap}
+\end{figure}
+
+\paragraph{Best validation accuracy as a function of $\lambda$.}
+\Cref{fig:wd-best-val} summarizes the sweep by plotting best
+validation accuracy against $\lambda$ on a log-x axis. This is the
+single plot that answers ``what coefficient should I pick?''
+
+\begin{figure}[t]
+  \centering
+  % \includegraphics[width=0.6\linewidth]{wd_best_val_vs_wd.png}  % uncomment when ready
+  \fbox{\rule{0pt}{4cm}\rule{0.55\linewidth}{0pt}}
+  \caption{Best validation accuracy versus weight-decay strength
+  $\lambda$ (log scale on the x-axis; $\lambda=0$ is shown as a
+  separate marker on the left). \draftnote{Drop
+  \texttt{figures/wd\_best\_val\_vs\_wd.png} and swap in the commented
+  \texttt{\textbackslash includegraphics} above. Mark the optimum.}}
+  \label{fig:wd-best-val}
+\end{figure}
+
+\paragraph{Is weight decay effective for fine-tuning ViT-Tiny on
+CIFAR-100?}
+\label{sec:wd:discussion}
+\draftnote{Topic sentence: state whether the best $\lambda > 0$
+beats $\lambda = 0$ on test accuracy, and by how many points.
+Then 2--3 sentences of evidence: cite the relevant rows of
+\cref{tab:wd} and the corresponding curve in \cref{fig:wd-curves}.}
+
+\paragraph{What is roughly the optimal coefficient?}
+\draftnote{Topic sentence: name the optimum (likely $10^{-2}$ or
+$5\times 10^{-2}$ for AdamW on a small ViT). Then describe the shape
+of the curve in \cref{fig:wd-best-val}: is it sharply peaked or a
+broad plateau? A broad plateau is the more useful finding because it
+implies the practitioner does not need fine tuning.}
+
+\paragraph{Does it act as overfitting prevention or capacity
+suppression?}
+\draftnote{Use the train--val gap evidence in \cref{fig:wd-gap}.
+The decision rule: if increasing $\lambda$ \emph{shrinks} the gap
+\emph{while} val accuracy improves or holds, weight decay is
+preventing overfitting. If the gap shrinks because train accuracy
+collapses faster than val, then weight decay is suppressing capacity
+(underfitting). For our largest $\lambda = 10^{-1}$, characterize
+which of these two regimes we are in; this is the key qualitative
+finding of the section.}
+
+\paragraph{Limitations.}
+\label{sec:wd:limitations}
+\draftnote{1 short paragraph. Cover: (i) single seed per
+configuration, so reported differences may sit within run-to-run
+noise---report the magnitude if multi-seed runs are available;
+(ii) we study fine-tuning from an ImageNet-pretrained checkpoint,
+not training from scratch, so conclusions may not transfer to the
+from-scratch regime where weight decay matters more
+\citep{touvron2021deit}; (iii) absolute differences between
+neighboring $\lambda$ values may be small (sub-1\%), so we are
+careful not to over-interpret rank orderings.}

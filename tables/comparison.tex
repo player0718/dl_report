@@ -1,0 +1,33 @@
+% Cross-technique summary table. Each row = best configuration of one
+% regularization family. Replace -- with real numbers; bold winners.
+
+\begin{table}[t]
+  \centering
+  \small
+  \caption{Best configuration per regularization family on
+  CIFAR-100 with ViT-Tiny/16. ``Ease'' is a qualitative judgment of
+  implementation effort; ``Cost'' is wall-clock training time
+  relative to baseline. Best per column in bold.
+  \draftnote{Fill in once all sections have results. Bold winners.}}
+  \label{tab:comparison}
+  \begin{tabular}{lcccll}
+    \toprule
+    Regularization (best config)
+      & Test acc (\%) $\uparrow$
+      & Best val acc (\%) $\uparrow$
+      & Gap reduction vs baseline (pp) $\uparrow$
+      & Ease
+      & Train cost \\
+    \midrule
+    None (baseline)            & -- & -- & 0.0 & --  & $1.0\times$ \\
+    Weight decay (best $\lambda$)
+                               & -- & -- & --  & easy   & $\approx 1.0\times$ \\
+    Dropout (best rate)        & -- & -- & --  & easy   & $\approx 1.0\times$ \\
+    Augmentation (best combo)  & -- & -- & --  & medium & -- \\
+    Label smoothing (best $\epsilon$)
+                               & -- & -- & --  & easy   & $\approx 1.0\times$ \\
+    Early stopping (best patience)
+                               & -- & -- & --  & easy   & $< 1.0\times$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}

@@ -1,0 +1,37 @@
+\section{Related Work}
+\label{sec:related}
+
+% Target length: ~half a page (3 short paragraphs). Organize by
+% methodology, not paper-by-paper.
+
+\paragraph{Vision Transformers and small-data training.}
+% 1 paragraph: ViT \citep{dosovitskiy2021vit} matches CNNs at scale but
+% trails them when trained from scratch on small datasets. DeiT
+% \citep{touvron2021deit} closes much of this gap with a heavy
+% regularization and augmentation recipe (RandAugment, Mixup, CutMix,
+% stochastic depth, label smoothing), demonstrating that for ViTs
+% \emph{regularization is not optional}. We revisit this lesson in the
+% fine-tuning regime on CIFAR-100.
+\draftnote{3--4 sentences: ViT, DeiT, ConvNets-as-baselines context.}
+
+\paragraph{Regularization in modern training pipelines.}
+% 1 paragraph: Modern recipes routinely combine several regularizers:
+% decoupled weight decay in AdamW \citep{loshchilov2019adamw}, dropout
+% \citep{srivastava2014dropout} and stochastic depth
+% \citep{huang2016stochasticdepth}, label smoothing
+% \citep{szegedy2016rethinking,muller2019labelsmoothing}, and an
+% augmentation suite of RandAugment \citep{cubuk2020randaugment},
+% Mixup \citep{zhang2018mixup}, and CutMix \citep{yun2019cutmix}. These
+% are usually tuned jointly, which makes their individual contributions
+% unclear---the gap our controlled study is meant to fill.
+\draftnote{3--4 sentences covering AdamW, dropout/droppath, label
+smoothing, and the modern aug suite. Cite the keys above.}
+
+\paragraph{Scope of this work.}
+% 1 short paragraph: We do not propose a new regularizer or model.
+% This is a controlled empirical study under a single fixed budget,
+% varying one regularization axis at a time. Our goal is comparative
+% understanding for ViT in the small-data fine-tuning regime, not a
+% claim of state of the art.
+\draftnote{Frame the paper as a controlled empirical study, not a
+novel-method paper. This sets reviewer expectations correctly.}

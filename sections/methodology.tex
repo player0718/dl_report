@@ -1,0 +1,68 @@
+\section{Methodology}
+\label{sec:methodology}
+
+This report is organized around a controlled comparison of five
+regularization families for ViT-Tiny/16 on CIFAR-100. The
+regularization family is the primary independent variable; the model,
+data split, optimization budget, and evaluation metrics are held fixed
+and are described later in \cref{sec:experiments}. This section defines
+the baseline and the method-specific design choices that the later
+experiments evaluate.
+
+\subsection{Baseline}
+\label{sec:method:baseline}
+Our reference system uses ViT-Tiny/16 fine-tuned on CIFAR-100 with no
+explicit regularization beyond the minimal preprocessing required by the
+model. Concretely, weight decay is set to $0$, dropout is disabled, no
+label smoothing is used, early stopping is disabled, and the input
+pipeline is limited to resize plus ImageNet normalization. This
+baseline establishes the overfitting regime that the remaining methods
+attempt to improve upon.
+
+\subsection{Weight Decay}
+\label{sec:method:wd}
+We study decoupled weight decay in AdamW \citep{loshchilov2019adamw}
+by sweeping
+\[
+  \lambda \in \{0,\, 10^{-4},\, 10^{-2},\, 5\times 10^{-2},\, 10^{-1}\}.
+\]
+The sweep spans ``effectively off'' settings ($0$, $10^{-4}$), a common
+AdamW default neighborhood ($10^{-2}$), a stronger DeiT-style value
+\citep{touvron2021deit} ($5\times10^{-2}$), and an intentionally
+aggressive setting ($10^{-1}$) to expose the underfitting boundary.
+
+\subsection{Dropout}
+\label{sec:method:dropout}
+\draftnote{Member 3: define the dropout variant as a method, not as an
+experiment paragraph. State where dropout is inserted (head only, MLP
+block, or attention output), which rates are swept, and why that
+placement is the cleanest controlled comparison for ViT-Tiny.}
+
+\subsection{Data Augmentation}
+\label{sec:method:aug}
+\draftnote{Member 4: define the augmentation family here. List the
+augmentations under study (Random Crop, Horizontal Flip, Color Jitter,
+RandAugment, Mixup, CutMix), state whether the primary comparison is
+one-at-a-time or light-versus-heavy combinations, and name the key
+hyperparameters that will be swept.}
+
+\subsection{Label Smoothing and Early Stopping}
+\label{sec:method:lsearly}
+We group label smoothing and early stopping because they regularize at
+two distinct stages of the same training pipeline: label smoothing
+changes the target distribution seen by the classifier, while early
+stopping changes the stopping rule used to select a checkpoint. They
+are therefore reported together but analyzed separately in the
+experiments.
+
+\paragraph{Label smoothing.}
+\draftnote{Member 5: state the label-smoothing sweep
+$\epsilon \in \{0,\,0.05,\,0.1,\,0.2\}$ and explain in 2--3 sentences why
+it is an output-level regularizer worth comparing against parameter- and
+data-level methods.}
+
+\paragraph{Early stopping.}
+\draftnote{Member 5: state the patience sweep
+$\{5,\,10,\,15\}$, the monitored metric, and the tolerance rule. Explain
+why early stopping is treated as a training-process regularizer rather
+than just a convenience trick.}

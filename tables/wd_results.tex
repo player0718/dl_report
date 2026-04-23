@@ -1,0 +1,27 @@
+% Weight-decay sweep results. Owner: Member 2.
+% Replace -- placeholders with real numbers from the runs.
+% Convention: best value per column in \textbf{...}; consistent decimals.
+
+\begin{table}[t]
+  \centering
+  \small
+  \caption{Effect of AdamW weight-decay strength $\lambda$ on
+  ViT-Tiny/16 fine-tuned on CIFAR-100. All other hyperparameters fixed
+  per \cref{sec:exp:training}. Best per column in bold.
+  \draftnote{Fill in numbers; bold the winners.}}
+  \label{tab:wd}
+  \begin{tabular}{lcccc}
+    \toprule
+    Weight decay $\lambda$ & Best val acc (\%) $\uparrow$
+                          & Test acc (\%) $\uparrow$
+                          & Train--val gap (pp) $\downarrow$
+                          & Train time (min) \\
+    \midrule
+    $0$                   & -- & -- & -- & -- \\
+    $10^{-4}$             & -- & -- & -- & -- \\
+    $10^{-2}$             & -- & -- & -- & -- \\
+    $5 \times 10^{-2}$    & -- & -- & -- & -- \\
+    $10^{-1}$             & -- & -- & -- & -- \\
+    \bottomrule
+  \end{tabular}
+\end{table}

@@ -1,0 +1,37 @@
+\subsubsection{Baseline Results}
+\label{sec:baseline}
+
+% Owner: Member 1. Target ~0.5 page.
+% This result anchors every comparison that follows. Be precise.
+
+\paragraph{Reference run.}
+We evaluate the baseline method defined in \cref{sec:method:baseline}
+under the shared training and evaluation protocol of
+\cref{sec:exp:training,sec:exp:eval}. This run establishes the starting
+point against which every regularizer is judged.
+
+\paragraph{Headline numbers.}
+\draftnote{Member 1: fill in best val acc, test acc, train--val gap,
+total training time once the baseline run finishes. The same numbers
+should appear as the ``no regularization'' row of \cref{tab:wd}
+(weight decay sweep) and the first row of \cref{tab:comparison}
+(cross-technique table).}
+
+\begin{figure}[t]
+  \centering
+  % \includegraphics[width=0.85\linewidth]{baseline_curves.png}  % uncomment when ready
+  \fbox{\rule{0pt}{4cm}\rule{0.8\linewidth}{0pt}}
+  \caption{Baseline ViT-Tiny/16 on CIFAR-100: training and validation
+  loss and accuracy across 30 epochs. \draftnote{Drop
+  \texttt{figures/baseline\_curves.png} and swap in the commented
+  \texttt{\textbackslash includegraphics} above. Use the same axis
+  scaling as the per-technique figures so visual comparisons hold.}}
+  \label{fig:baseline-curves}
+\end{figure}
+
+\paragraph{Discussion.}
+\draftnote{1 short paragraph: does the baseline overfit? At which
+epoch does train accuracy decouple from val accuracy? What is the
+train--val gap at the best-val epoch? Frame these as the questions
+the regularizers in \cref{sec:wd,sec:dropout,sec:augmentation,sec:lsearly}
+will try to answer.}

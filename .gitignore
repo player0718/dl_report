@@ -1,0 +1,22 @@
+# LaTeX / latexmk
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.run.xml
+*.bcf
+*.xdv
+
+# Local build output (Overleaf rebuilds)
+*.pdf
+
+# Editor
+*~
+.DS_Store

@@ -1,0 +1,31 @@
+\subsubsection{Data Augmentation Results}
+\label{sec:augmentation}
+
+% Owner: Member 4. Bullet-level skeleton; expand to ~1--1.5 pages
+% (this section can be the most visual one).
+
+\paragraph{Experiment focus.}
+We evaluate the augmentation families defined in \cref{sec:method:aug}
+under the shared protocol of \cref{sec:exp:training,sec:exp:eval}.
+Only the data pipeline changes; the model, optimizer, schedule, and
+checkpoint-selection rule remain fixed.
+
+\paragraph{Results.}
+\draftnote{Expand this subsection into prose using the checklist below.}
+\begin{itemize}
+  \item Table: per augmentation (or per combination), best val acc /
+        test acc / train--val gap / train time.
+  \item Curves figure overlaying val accuracy per augmentation.
+  \item Optional: a robustness probe (e.g. corruption noise) if time
+        permits; otherwise skip.
+\end{itemize}
+
+\paragraph{Discussion.}
+\label{sec:aug:discussion}
+\draftnote{Answer the three Member 4 questions in short paragraphs.}
+\begin{enumerate}
+  \item Which augmentation is most effective?
+  \item How big is the gap between simple and strong augmentation?
+  \item Is data-level regularization more effective than
+        parameter-level (cross-reference \cref{sec:wd,sec:dropout})?
+\end{enumerate}

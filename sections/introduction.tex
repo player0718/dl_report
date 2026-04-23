@@ -1,0 +1,53 @@
+\section{Introduction}
+\label{sec:intro}
+
+% Target length: ~1 page. Keep paragraphs tight; the course rubric
+% explicitly penalizes verbose, low-information writing.
+
+\paragraph{Motivation.}
+% 1 paragraph: ViTs have weaker inductive biases than CNNs (no locality,
+% no translation equivariance), so they typically need more data or
+% stronger regularization to match CNN generalization
+% \citep{dosovitskiy2021vit,touvron2021deit}. On small datasets the
+% problem is sharper: the model can memorize the training set long before
+% it learns the right features.
+\draftnote{Write 4--6 sentences motivating regularization for ViTs.}
+
+\paragraph{Why CIFAR-100 with ViT-Tiny.}
+% 1 paragraph: CIFAR-100 (50k train, 100 classes) is small relative to
+% ImageNet but large enough that fine-tuning a small ViT is non-trivial.
+% ViT-Tiny is the smallest standard ViT and therefore most sensitive to
+% regularizer strength: too weak and it overfits; too strong and it
+% underfits within 30 epochs. This regime is informative.
+\draftnote{One paragraph: justify the dataset/model choice as a
+realistic ``modest model, modest data'' overfitting regime.}
+
+\paragraph{Contributions.}
+This paper makes the following contributions:
+\begin{itemize}
+  \item We establish a unified, reproducible fine-tuning baseline for
+        ViT-Tiny/16 on CIFAR-100 against which all regularizers are
+        compared (\cref{sec:baseline}).
+  \item We perform a systematic sweep of \emph{weight decay} strengths
+        in AdamW and analyze its effect on the train--validation gap
+        (\cref{sec:wd}).
+  \item We study \emph{dropout} placement and rate (\cref{sec:dropout}).
+  \item We compare a suite of \emph{data augmentations} from light to
+        heavy combinations, including Mixup/CutMix
+        (\cref{sec:augmentation}).
+  \item We study \emph{label smoothing} and \emph{early stopping} as
+        output-level and training-process regularizers
+        (\cref{sec:lsearly}).
+  \item We provide a unified cross-technique comparison and discuss
+        which family of regularization matters most for ViT in this
+        regime (\cref{sec:comparison,sec:conclusion}).
+\end{itemize}
+
+\paragraph{Roadmap.}
+\Cref{sec:related} reviews related work.
+\Cref{sec:methodology} defines the baseline and the regularization
+families under study.
+\Cref{sec:experiments} describes the shared experimental protocol and
+reports results for each method.
+\Cref{sec:comparison} compares them.
+\Cref{sec:conclusion} concludes.

@@ -1,0 +1,35 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+% Target: ~half a page. Each TODO below should expand to 2--3 sentences
+% that point at concrete numbers from the preceding sections.
+
+\paragraph{Most effective regularization.}
+\draftnote{Name the family with the highest test accuracy in
+\cref{tab:comparison} and the absolute improvement over baseline. Be
+specific about the configuration (e.g. ``RandAugment + Mixup with
+$\alpha = 0.2$'').}
+
+\paragraph{Most stable.}
+\draftnote{Identify the family whose results varied least across
+its hyperparameter sweep (broad plateau in val acc vs hyperparameter)
+or, if multi-seed is available, lowest std across seeds. A flat curve
+is a feature: it means the practitioner does not need to tune.}
+
+\paragraph{Easiest to implement with high payoff.}
+\draftnote{Almost certainly weight decay or label smoothing
+(one-line config change). Quantify the payoff per line of code if
+possible.}
+
+\paragraph{Which family matters most for ViT.}
+\draftnote{Restate the conclusion of \cref{sec:comp:discussion} in
+one sentence and connect it to the broader literature: ViT lacks the
+inductive biases of CNNs \citep{dosovitskiy2021vit}, so
+\emph{data-level} regularization---which effectively injects those
+biases through the data distribution---should and does carry the most
+weight \citep{touvron2021deit}. \emph{(Verify this claim against your
+own results; do not assert it if your results disagree.)}}
+
+\paragraph{Future work.}
+\draftnote{1--2 sentences: combining the per-family winners,
+extending to longer schedules, or replicating from-scratch training.}

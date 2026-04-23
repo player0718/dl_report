@@ -1,0 +1,58 @@
+\section{Cross-Technique Comparison}
+\label{sec:comparison}
+
+% Target: ~1 page. This is the section that answers ``so what'' for
+% the whole study; spend disproportionate effort here.
+
+\subsection{Summary Table}
+\label{sec:comp:table}
+\Cref{tab:comparison} aggregates the best configuration from each
+preceding section into one table. We deliberately use the
+\emph{best} setting per family (not the average) because the question
+is which family is worth investing in, not how robust each family is
+to its own hyperparameter.
+
+\input{tables/comparison}
+
+\subsection{Visual Summary}
+\label{sec:comp:bar}
+\begin{figure}[t]
+  \centering
+  % \includegraphics[width=0.7\linewidth]{comparison_bar.png}  % uncomment when ready
+  \fbox{\rule{0pt}{4cm}\rule{0.65\linewidth}{0pt}}
+  \caption{Best test accuracy per regularization family, with the
+  no-regularization baseline as reference. \draftnote{Drop
+  \texttt{figures/comparison\_bar.png} and swap in the commented
+  \texttt{\textbackslash includegraphics} above. Sort bars by test
+  accuracy and annotate each with the absolute improvement over
+  baseline.}}
+  \label{fig:comparison-bar}
+\end{figure}
+
+\subsection{Which Family Matters Most for ViT?}
+\label{sec:comp:discussion}
+The four regularizer families correspond to four levels at which a
+model can be constrained:
+\begin{itemize}
+  \item \textbf{Data-level}: augmentation (\cref{sec:augmentation}).
+  \item \textbf{Parameter-level}: weight decay (\cref{sec:wd}),
+        dropout (\cref{sec:dropout}).
+  \item \textbf{Output-level}: label smoothing (\cref{sec:lsearly}).
+  \item \textbf{Training-process-level}: early stopping
+        (\cref{sec:lsearly}).
+\end{itemize}
+\draftnote{Write 1--2 paragraphs that argue from the numbers in
+\cref{tab:comparison} which level pays off most for a small ViT in
+the small-data fine-tuning regime. Be specific: cite percentage-point
+improvements rather than vague language. If two families tie, say so
+and discuss the tradeoff (e.g. data augmentation costs more compute
+per epoch; weight decay is free).}
+
+\subsection{Stability}
+\label{sec:comp:stability}
+\draftnote{If multi-seed runs are available, report the standard
+deviation of test accuracy per family and discuss which is most
+stable. Otherwise, explicitly note that all numbers are single-seed
+and that the ranking should be interpreted accordingly. This should be
+stated consistently with the limitations discussed in the per-method
+results sections.}

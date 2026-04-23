@@ -1,0 +1,42 @@
+\subsubsection{Label Smoothing and Early Stopping Results}
+\label{sec:lsearly}
+
+% Owner: Member 5. Bullet-level skeleton; expand to ~1 page.
+
+\paragraph{Label smoothing results.}
+\draftnote{Expand this subsection into prose using the checklist below.}
+\begin{itemize}
+  \item Reference the method definition in \cref{sec:method:lsearly}
+        and note that all shared training details follow
+        \cref{sec:exp:training,sec:exp:eval}.
+  \item Report best val acc / test acc / train--val gap / train time
+        in a table.
+  \item Briefly discuss confidence calibration (e.g. softmax max
+        probability or ECE), since this is where label smoothing
+        \citep{szegedy2016rethinking,muller2019labelsmoothing}
+        differs most from other regularizers.
+\end{itemize}
+
+\paragraph{Early stopping results.}
+\draftnote{Expand this subsection into prose using the checklist below.}
+\begin{itemize}
+  \item Reference the method definition in \cref{sec:method:lsearly}
+        and note the shared protocol in
+        \cref{sec:exp:training,sec:exp:eval}.
+  \item Compare against fixed 30-epoch training: at which epoch does
+        early stopping trigger? How much compute saved?
+  \item Test accuracy at the early-stopped checkpoint vs final-epoch
+        checkpoint.
+\end{itemize}
+
+\paragraph{Discussion.}
+\label{sec:lsearly:discussion}
+\draftnote{Answer the three Member 5 questions in short paragraphs.}
+\begin{enumerate}
+  \item Does label smoothing improve generalization here?
+  \item Does early stopping actually help, or is it just ``stop
+        early''?
+  \item How do these output- and process-level regularizers relate to
+        the parameter-level (\cref{sec:wd,sec:dropout}) and
+        data-level (\cref{sec:augmentation}) ones?
+\end{enumerate}
