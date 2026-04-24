@@ -26,10 +26,33 @@ by sweeping
 \[
   \lambda \in \{0,\, 10^{-4},\, 10^{-2},\, 5\times 10^{-2},\, 10^{-1}\}.
 \]
-The sweep spans ``effectively off'' settings ($0$, $10^{-4}$), a common
-AdamW default neighborhood ($10^{-2}$), a stronger DeiT-style value
-\citep{touvron2021deit} ($5\times10^{-2}$), and an intentionally
-aggressive setting ($10^{-1}$) to expose the underfitting boundary.
+Weight decay is the only parameter-level regularizer varied in this
+study; all other components of the optimization pipeline are fixed to
+the shared baseline in \cref{sec:method:baseline,sec:exp:training}. This
+design isolates whether shrinking parameter norms during fine-tuning can
+improve generalization without confounding the comparison with changes
+in augmentation, architecture, or training budget.
+
+The sweep spans three qualitatively different regimes. The first regime,
+$\lambda \in \{0,10^{-4}\}$, is effectively a no-decay control and tests
+whether a very small penalty is distinguishable from the baseline. The
+second regime, $\lambda=10^{-2}$, covers the light regularization range
+commonly used with AdamW in modern vision training pipelines. The third
+regime, $\lambda \in \{5\times10^{-2},10^{-1}\}$, probes substantially
+stronger shrinkage, including a DeiT-style value
+\citep{touvron2021deit} and a deliberately aggressive setting intended
+to expose the onset of underfitting.
+
+Because the model is initialized from an ImageNet-pretrained checkpoint
+and fine-tuned for only 30 epochs, the expected effect size is smaller
+than in from-scratch ViT training. The purpose of this sweep is
+therefore not only to identify the best coefficient, but also to answer
+whether weight decay is a meaningful regularization knob at all in this
+short-horizon fine-tuning regime. Concretely, the experiment asks three
+questions: whether any $\lambda>0$ improves validation or test
+performance over $\lambda=0$, whether the response curve shows a clear
+optimum or only a broad plateau, and whether stronger decay reduces
+overfitting or instead suppresses effective model capacity.
 
 \subsection{Dropout}
 \label{sec:method:dropout}

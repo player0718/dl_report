@@ -29,6 +29,32 @@ to its own hyperparameter.
   \label{fig:comparison-bar}
 \end{figure}
 
+\subsection{Weight Decay Analysis}
+\label{sec:comp:wd-analysis}
+Within the shared 30-epoch fine-tuning protocol, weight decay behaves as
+a weak regularization knob rather than a dominant driver of
+generalization. The best test accuracy remains the no-decay baseline
+($84.75\%$ at $\lambda=0$), while the closest nonzero setting,
+$\lambda=10^{-2}$, reaches $84.74\%$; this difference is too small to
+support a meaningful practical advantage for tuning weight decay in this
+regime. At the same time, the strongest decay in the sweep
+($\lambda=10^{-1}$) attains the highest validation accuracy
+($84.56\%$) and the smallest train--val gap ($4.97$ percentage points),
+showing that validation-selected and test-selected optima do not fully
+coincide.
+
+\Cref{fig:wd-best-val,fig:wd-gap} suggests that the main effect of
+stronger decay is a modest reduction in memorization rather than a large
+improvement in final accuracy. Relative to the baseline, $\lambda=10^{-1}$
+reduces the gap at the best-validation epoch by about $0.41$ percentage
+points while preserving competitive validation performance. However,
+$\lambda=5\times10^{-2}$ lowers both validation and test accuracy
+without reducing the gap, which is more consistent with capacity
+suppression than with useful regularization. Taken together, the sweep
+indicates that pretrained ViT-Tiny on CIFAR-100 is only mildly
+overfitting under this short training horizon, leaving limited room for
+weight decay to improve upon the baseline.
+
 \subsection{Which Family Matters Most for ViT?}
 \label{sec:comp:discussion}
 The four regularizer families correspond to four levels at which a
