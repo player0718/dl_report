@@ -1,27 +1,34 @@
 % Weight-decay sweep results. Owner: Member 2.
-% Replace -- placeholders with real numbers from the runs.
-% Convention: best value per column in \textbf{...}; consistent decimals.
+% Main protocol: 100 epochs. Original 30-epoch results retained as supplemental
+% evidence because they motivated the longer-run diagnostic.
 
 \begin{table}[t]
   \centering
   \small
   \caption{Effect of AdamW weight-decay strength $\lambda$ on
-  ViT-Tiny/16 fine-tuned on CIFAR-100. All other hyperparameters fixed
-  per \cref{sec:exp:training}. Best per column in bold.}
+  ViT-Tiny/16 fine-tuned on CIFAR-100. The 100-epoch sweep is the main
+  result; the original 30-epoch sweep is retained as a supplemental
+  short-horizon reference. Best values within the 100-epoch columns are
+  bolded.}
   \label{tab:wd}
   \resizebox{\columnwidth}{!}{%
-  \begin{tabular}{lcccc}
+  \begin{tabular}{lccccc}
     \toprule
-    Weight decay $\lambda$ & Best val acc (\%) $\uparrow$
-                          & Test acc (\%) $\uparrow$
-                          & Train--val gap (pp) $\downarrow$
-                          & Train time (min) \\
+    Weight decay $\lambda$
+      & \multicolumn{3}{c}{100 epochs}
+      & \multicolumn{2}{c}{30 epochs} \\
+    \cmidrule(lr){2-4}\cmidrule(lr){5-6}
+      & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$
+      & Gap (pp) $\downarrow$
+      & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$ \\
     \midrule
-    $0$                   & 84.50 & \textbf{84.75} & 5.38 & 31.5 \\
-    $10^{-4}$             & 84.38 & 84.31 & 5.28 & 31.5 \\
-    $10^{-2}$             & 84.28 & 84.74 & 5.54 & \textbf{31.3} \\
-    $5 \times 10^{-2}$    & 83.88 & 84.05 & 5.54 & 31.5 \\
-    $10^{-1}$             & \textbf{84.56} & 84.33 & \textbf{4.97} & 31.7 \\
+    $0$                   & 81.90 & 81.81 & 11.23 & 84.50 & 84.75 \\
+    $10^{-4}$             & 82.20 & 82.21 & 11.49 & 84.38 & 84.31 \\
+    $10^{-2}$             & 82.16 & 82.17 & 11.55 & 84.28 & 84.74 \\
+    $5 \times 10^{-2}$    & \textbf{82.56} & \textbf{82.23} & \textbf{11.02} & 83.88 & 84.05 \\
+    $10^{-1}$             & 81.44 & 81.25 & 11.36 & 84.56 & 84.33 \\
     \bottomrule
   \end{tabular}
   }

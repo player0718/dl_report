@@ -42,8 +42,11 @@ regularization variable changes:
   \item \textbf{Learning rate:} base $3\times10^{-4}$ with a cosine schedule
         \citep{loshchilov2017sgdr} and a 3-epoch linear warmup from
         $0$.
-  \item \textbf{Schedule:} 30 epochs total, batch size 64, mixed
-        precision (AMP), gradient clipping at $\lVert g\rVert_2 = 1.0$.
+  \item \textbf{Schedule:} batch size 64, mixed precision (AMP),
+        gradient clipping at $\lVert g\rVert_2 = 1.0$. The initial
+        project protocol used 30 epochs; the final weight-decay analysis
+        additionally reports a 100-epoch sweep to match the updated
+        group baseline horizon.
   \item \textbf{Seed:} \texttt{42} for data split, model init of new
         head, and dataloader shuffling.
 \end{itemize}

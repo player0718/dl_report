@@ -31,29 +31,25 @@ to its own hyperparameter.
 
 \subsection{Weight Decay Analysis}
 \label{sec:comp:wd-analysis}
-Within the shared 30-epoch fine-tuning protocol, weight decay behaves as
-a weak regularization knob rather than a dominant driver of
-generalization. The best test accuracy remains the no-decay baseline
-($84.75\%$ at $\lambda=0$), while the closest nonzero setting,
-$\lambda=10^{-2}$, reaches $84.74\%$; this difference is too small to
-support a meaningful practical advantage for tuning weight decay in this
-regime. At the same time, the strongest decay in the sweep
-($\lambda=10^{-1}$) attains the highest validation accuracy
-($84.56\%$) and the smallest train--val gap ($4.97$ percentage points),
-showing that validation-selected and test-selected optima do not fully
-coincide.
+With the updated 100-epoch horizon, weight decay behaves as a weak but
+measurable regularization knob. The no-decay control reaches $81.81\%$
+test accuracy, while $\lambda=5\times10^{-2}$ reaches the best validation
+accuracy ($82.56\%$) and the best test accuracy ($82.23\%$). The absolute
+gain is modest ($+0.42$ percentage points), and the neighboring nonzero
+settings $\lambda=10^{-4}$ and $\lambda=10^{-2}$ obtain similar test
+accuracy ($82.21\%$ and $82.17\%$). This pattern suggests a broad,
+low-amplitude optimum rather than a sharply tuned coefficient.
 
-\Cref{fig:wd-best-val,fig:wd-gap} suggests that the main effect of
-stronger decay is a modest reduction in memorization rather than a large
-improvement in final accuracy. Relative to the baseline, $\lambda=10^{-1}$
-reduces the gap at the best-validation epoch by about $0.41$ percentage
-points while preserving competitive validation performance. However,
-$\lambda=5\times10^{-2}$ lowers both validation and test accuracy
-without reducing the gap, which is more consistent with capacity
-suppression than with useful regularization. Taken together, the sweep
-indicates that pretrained ViT-Tiny on CIFAR-100 is only mildly
-overfitting under this short training horizon, leaving limited room for
-weight decay to improve upon the baseline.
+\Cref{fig:wd-best-val,fig:wd-gap} also shows the cost of making the
+regularizer too strong. The aggressive setting $\lambda=10^{-1}$ drops
+to $81.25\%$ test accuracy, below the no-decay control. Its lower
+training accuracy indicates capacity suppression rather than useful
+regularization. Compared with the original 30-epoch sweep, the 100-epoch
+run exhibits a much larger train--val gap (about 11 percentage points
+instead of about 5), so moderate decay becomes more useful only after the
+longer schedule creates more overfitting pressure. Even then, the effect
+size remains small enough that the ranking should be treated cautiously
+without multi-seed confirmation.
 
 \subsection{Which Family Matters Most for ViT?}
 \label{sec:comp:discussion}
