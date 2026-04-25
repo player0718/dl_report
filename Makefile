@@ -7,7 +7,7 @@ MAIN := main
 
 all: $(MAIN).pdf
 
-$(MAIN).pdf: $(MAIN).tex references.bib $(wildcard sections/*.tex) $(wildcard tables/*.tex)
+$(MAIN).pdf: $(MAIN).tex references.bib aaai2026.sty aaai2026.bst $(wildcard sections/*.tex) $(wildcard tables/*.tex)
 	latexmk -pdf -interaction=nonstopmode -halt-on-error $(MAIN).tex
 
 watch:

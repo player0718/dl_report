@@ -1,43 +1,81 @@
-\documentclass[11pt]{article}
+\documentclass[letterpaper]{article} % DO NOT CHANGE THIS
+\usepackage{aaai2026}  % AAAI 2026 camera-ready style
+\usepackage{times}  % DO NOT CHANGE THIS
+\usepackage{helvet}  % DO NOT CHANGE THIS
+\usepackage{courier}  % DO NOT CHANGE THIS
+\usepackage[hyphens]{url}  % DO NOT CHANGE THIS
+\usepackage{graphicx} % DO NOT CHANGE THIS
+\urlstyle{rm} % DO NOT CHANGE THIS
+\def\UrlFont{\rm}  % DO NOT CHANGE THIS
+\usepackage{natbib}  % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
+\usepackage{caption} % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
+\frenchspacing  % DO NOT CHANGE THIS
+\setlength{\pdfpagewidth}{8.5in} % DO NOT CHANGE THIS
+\setlength{\pdfpageheight}{11in} % DO NOT CHANGE THIS
 
-% --- Layout & typography ---------------------------------------------------
-\usepackage[a4paper,margin=1in]{geometry}
-\usepackage{microtype}
-\usepackage{xcolor}
-
-% --- Math and units ---------------------------------------------------------
+% Project-specific packages that do not alter AAAI page geometry or fonts.
 \usepackage{amsmath,amssymb}
-
-% --- Floats, tables, figures -----------------------------------------------
-\usepackage{graphicx}
-\graphicspath{{figures/}}
 \usepackage{booktabs}
-\usepackage{subcaption}
 
-% --- References & cross-refs -----------------------------------------------
-% Convention: natbib + plainnat. Use \citep{...} for parenthetical citations
-% and \citet{...} for textual citations. Cross-refs use \cref.
-\usepackage[round,authoryear]{natbib}
-\usepackage[colorlinks=true,linkcolor=black,citecolor=blue,urlcolor=blue]{hyperref}
-\usepackage[capitalize,noabbrev]{cleveref}
+\graphicspath{{figures/}}
 
-% --- Draft reminders (plain text, no colored boxes) ------------------------
+\pdfinfo{
+/TemplateVersion (AAAI.2026)
+}
+
+% Draft reminders are kept visible because several sections are still skeletons.
 \newcommand{\draftnote}[1]{#1}
+
+% Lightweight cross-reference helpers avoid loading packages that may conflict
+% with the AAAI style while preserving the existing section files.
+\ExplSyntaxOn
+\seq_new:N \l_project_cref_labels_seq
+\cs_new:Npn \project_cref_base_name:n #1
+  {
+    \tl_if_in:nnTF {#1} {fig:} {figure}
+      {
+        \tl_if_in:nnTF {#1} {tab:} {table} {section}
+      }
+  }
+\cs_new:Npn \project_cref_name:nn #1#2
+  {
+    \tl_set:Nx \l_tmpa_tl { \project_cref_base_name:n {#1} }
+    \str_if_eq:nnT {#2} {upper}
+      {
+        \tl_set:Nx \l_tmpa_tl { \tl_upper_case:n { \tl_head:N \l_tmpa_tl } \tl_tail:N \l_tmpa_tl }
+      }
+    \l_tmpa_tl
+    \int_compare:nNnT { \seq_count:N \l_project_cref_labels_seq } > {1} {s}
+  }
+\cs_new_protected:Npn \project_cref:nn #1#2
+  {
+    \seq_set_split:Nnn \l_project_cref_labels_seq { , } {#1}
+    \project_cref_name:nn { \seq_item:Nn \l_project_cref_labels_seq {1} } {#2}~
+    \seq_map_indexed_inline:Nn \l_project_cref_labels_seq
+      {
+        \ref{##2}
+        \int_compare:nNnT {##1} < { \seq_count:N \l_project_cref_labels_seq } {,~}
+      }
+  }
+\NewDocumentCommand{\cref}{m}{\project_cref:nn {#1} {lower}}
+\NewDocumentCommand{\Cref}{m}{\project_cref:nn {#1} {upper}}
+\ExplSyntaxOff
 
 % --- Document --------------------------------------------------------------
 \title{Regularization Techniques for ViT on CIFAR-100:\\
        A Comparative Study}
 
-% TODO: replace placeholder names with real names + matric numbers as required
-% by the AI6103 submission template. Order = section ownership order.
 \author{
-  Member 1 % Baseline (no regularization)
-  \and Member 2 % Weight Decay
-  \and Member 3 % Dropout
-  \and Member 4 % Data Augmentation
-  \and Liang Weicong
+  Member 1\textsuperscript{\rm 1},
+  Member 2\textsuperscript{\rm 1},
+  Member 3\textsuperscript{\rm 1},
+  Member 4\textsuperscript{\rm 1},
+  Liang Weicong\textsuperscript{\rm 1}
 }
-\date{\today}
+\affiliations{
+  \textsuperscript{\rm 1}AI6103 Deep Learning Project Group\\
+  Nanyang Technological University
+}
 
 \begin{document}
 \maketitle
@@ -53,7 +91,6 @@
 \input{sections/contributions}
 
 % --- Bibliography ----------------------------------------------------------
-\bibliographystyle{plainnat}
 \bibliography{references}
 
 \end{document}

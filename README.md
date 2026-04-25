@@ -1,12 +1,14 @@
 # AI6103 Project Report
 
-LaTeX scaffold for the AI6103 group project: *Regularization Techniques for ViT on CIFAR-100: A Comparative Study*.
+AAAI-format LaTeX scaffold for the AI6103 group project: *Regularization Techniques for ViT on CIFAR-100: A Comparative Study*.
 
 ## What's in here
 
 ```
 report/
 ├── main.tex                 # entry point; \input's all sections
+├── aaai2026.sty             # AAAI 2026 LaTeX style
+├── aaai2026.bst             # AAAI 2026 bibliography style
 ├── references.bib           # bibliography (natbib / plainnat)
 ├── Makefile                 # `make` -> main.pdf via latexmk
 ├── README.md                # this file
@@ -72,11 +74,9 @@ make watch
 make clean
 ```
 
-Requires TeX Live (or MiKTeX) with packages: `geometry`, `microtype`,
-`amsmath`, `algorithm`, `algpseudocode`, `siunitx`, `graphicx`,
-`booktabs`, `subcaption`, `natbib`, `hyperref`, `cleveref`,
-`todonotes`. All of these are in the standard `texlive-latex-extra`
-bundle.
+Requires TeX Live (or MiKTeX) with the AAAI 2026 files in this directory
+(`aaai2026.sty`, `aaai2026.bst`) and standard packages including
+`amsmath`, `amssymb`, `graphicx`, `booktabs`, `natbib`, and `caption`.
 
 ## Where to put new artifacts
 
@@ -116,6 +116,6 @@ and copy the canonical BibTeX, then add it to `references.bib`.
 
 ## Target length
 
-Body content: 8–12 pages, exclusive of references and the optional
-appendix. The skeleton is sized to land in this range when the TODOs
-are filled in.
+Body content: maximum 6 pages, excluding references, following the course
+requirement. The AAAI style file uses US Letter, two columns, and 10pt
+type.
