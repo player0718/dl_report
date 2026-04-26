@@ -1,33 +1,6 @@
 \section{Results and Discussion}
 \label{sec:results}
 
-Table~\ref{tab:main_results} first gives an overall comparison of the best
-results achieved by all methods under the same experimental setting. We
-report the best validation accuracy, the epoch at which it is achieved,
-and the corresponding test accuracy for each method. The following
-subsections then discuss these methods in more detail.
-
-\begin{table*}[t]
-\centering
-\caption{Overall comparison of the best results for all methods. All methods use the same backbone, dataset, and training budget unless otherwise noted.}
-\label{tab:main_results}
-\small
-\setlength{\tabcolsep}{4pt}   % 默认大约 6pt，可适当缩小
-\renewcommand{\arraystretch}{1.05}
-\begin{tabular}{p{3.0cm}cccccp{3.6cm}}
-\hline
-Method & Test Acc & Best Val Acc & Best Epoch & Train Loss @ Best & Val Loss @ Best & Notes \\
-\hline
-Baseline & 79.65 & 80.42 & 74 & 0.3236 & 0.9317 & Clean reference setting \\
-Weight Decay & -- & -- & -- & -- & -- & AdamW with weight decay \\
-Dropout & -- & -- & -- & -- & -- & Dropout-enabled fine-tuning \\
-Data Augmentation & -- & -- & -- & -- & -- & Stronger augmentation pipeline \\
-Label Smoothing + Early Stopping & 83.58 & 83.86 & 92 & 1.0059 & 1.3621 & $\epsilon = 0.1$, patience=25 \\
-LLRD + Staged Fine-tuning & 85.33 & 86.06 & 22 & 0.5026 & 0.5633 & Proposed optimization strategy \\
-\hline
-\end{tabular}
-\end{table*}
-
 \input{sections/experiments_baseline}
 \input{sections/experiments_weight_decay}
 \input{sections/experiments_dropout}

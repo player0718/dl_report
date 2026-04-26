@@ -1,66 +1,41 @@
 \section{Experiments}
 \label{sec:experiments}
 
-This section fixes the shared experimental protocol and then reports the
-results for each regularization family under that common protocol. The
-goal is to ensure that any performance difference can be attributed to
-the regularizer rather than to changes in model capacity, training
-budget, or evaluation procedure.
+This section describes the shared experimental setting used in all
+comparisons. We keep the dataset, model, training budget, and evaluation
+protocol fixed, and only change the target regularization method in each
+experiment.
 
 \subsection{Dataset}
 \label{sec:exp:data}
-We use CIFAR-100 \citep{krizhevsky2009cifar}, which contains
-$50{,}000$ training and $10{,}000$ test images of size
-$32{\times}32$ across 100 classes. We hold out a fixed
-10\% of the training set as a validation split for
-checkpoint selection, leaving $45{,}000$ images for training and
-$5{,}000$ for validation; the official test set is used only for the
-final number reported per run. The split is created with seed
-\texttt{42} and reused across all experiments.
-\draftnote{Confirm exact split sizes from
-\texttt{ViT\_CIFAR100\_Baseline\_Colab.ipynb}.}
+We use CIFAR-100 \citep{krizhevsky2009cifar}, which contains 50,000
+training images and 10,000 test images from 100 classes. We reserve
+10\% of the training set for validation, resulting in 45,000 training
+images and 5,000 validation images. The official test set is used only
+for final evaluation. The same split with seed 42 is used in all runs.
 
 \subsection{Model}
 \label{sec:exp:model}
 We fine-tune \texttt{vit\_tiny\_patch16\_224} from \texttt{timm}
-\citep{wightman2019timm}, an ImageNet-1k pretrained ViT-Tiny/16
-\citep{dosovitskiy2021vit} (5.7M parameters, patch size $16$, input
-resolution $224{\times}224$). CIFAR-100 images are resized to
-$224{\times}224$ to match the patch grid. The 1000-way classification
-head is replaced with a freshly initialized 100-way linear head; all
-other parameters are loaded from the pretrained checkpoint and
-fine-tuned end-to-end.
+\citep{wightman2019timm}, using ImageNet-pretrained weights
+\citep{dosovitskiy2021vit}. CIFAR-100 images are resized to
+$224 \times 224$ to match the model input size. The original
+classification head is replaced with a 100-class linear layer, while
+the remaining parameters are initialized from the pretrained checkpoint.
 
 \subsection{Training Protocol}
 \label{sec:exp:training}
-The training recipe is fixed across all experiments and only the
-regularization variable changes:
+Unless otherwise noted, all experiments use AdamW
+\citep{loshchilov2019adamw} with base learning rate $3\times10^{-4}$,
+a 3-epoch linear warmup, and cosine decay
+\citep{loshchilov2017sgdr}. We use batch size 64, mixed precision
+training, and gradient clipping with $\lVert g\rVert_2 = 1.0$. To keep
+the comparison controlled, only the target regularization-related
+setting is changed across experiments. Unless otherwise stated, all additional regularization-related parameters in the baseline are set to 0 or left at their default values.
 
-\begin{itemize}
-  \item \textbf{Optimizer:} AdamW \citep{loshchilov2019adamw} with
-        $\beta_1{=}0.9$, $\beta_2{=}0.999$.
-  \item \textbf{Learning rate:} base $3\times10^{-4}$ with a cosine schedule
-        \citep{loshchilov2017sgdr} and a 3-epoch linear warmup from
-        $0$.
-  \item \textbf{Schedule:} batch size 64, mixed precision (AMP),
-        gradient clipping at $\lVert g\rVert_2 = 1.0$. The initial
-        project protocol used 30 epochs; the final weight-decay analysis
-        additionally reports a 100-epoch sweep to match the updated
-        group baseline horizon.
-  \item \textbf{Seed:} \texttt{42} for data split, model init of new
-        head, and dataloader shuffling.
-\end{itemize}
-
-All members start from the same training script and configuration
-template derived from the baseline method in
-\cref{sec:method:baseline}. Each experiment changes only the
-regularization-related fields needed for that family so that
-comparisons remain controlled.
-
-
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
-\caption{Baseline training configuration.}
+\caption{Main baseline training settings.}
 \label{tab:baseline_config}
 \small
 \setlength{\tabcolsep}{5pt}
@@ -74,33 +49,22 @@ Pretraining & ImageNet pretrained \\
 Dataset & CIFAR-100 \\
 Input size & $224 \times 224$ \\
 Batch size & 64 \\
-Epochs & 30 \& 100 \\
+Epochs & 30 and 100 \\
 Optimizer & AdamW \\
 Base learning rate & $3\times10^{-4}$ \\
-Weight decay & 0.0 \\
-Warmup epochs & 3 \\
-Learning-rate schedule & Linear warmup + cosine decay \\
-Dropout & 0.0 \\
-Attention Dropout & 0.0 \\
-Patch Dropout & 0.0 \\
-Drop path & 0.0 \\
-Label smoothing & 0.0 \\
-Early stopping & Disabled \\
+Warmup & 3 epochs \\
+LR schedule & Linear warmup + cosine decay \\
 Validation split & 10\% of training set \\
+Other regularization settings & 0 or default \\
 \hline
 \end{tabular}
 \end{table}
 
 \subsection{Evaluation Metrics}
 \label{sec:exp:eval}
-For each run we record per-epoch training loss, training accuracy,
-validation loss, and validation accuracy. We select the checkpoint with
-the highest validation accuracy and report (i) best validation
-accuracy, (ii) test accuracy of that checkpoint, and (iii) the
-\emph{train--val gap} at the same epoch as a proxy for overfitting.
-Wall-clock training time per run is also reported to compare cost.
-\draftnote{If we have time/compute for $\geq$3 seeds per
-configuration, report mean$\pm$std here; otherwise explicitly note in
-the results and limitations that the current draft uses single-seed
-runs.}
-
+For each run, we record training loss, training accuracy, validation
+loss, and validation accuracy at every epoch. We select the checkpoint
+with the highest validation accuracy and report its validation accuracy,
+test accuracy, and train--validation gap. Training time is also
+reported for efficiency comparison. Unless otherwise stated, the current
+results are based on single-seed runs.

@@ -11,6 +11,9 @@ rate vary across runs. Overall, the results from the 30-epoch training run gener
 
 \paragraph{Results summary.} For standard Dropout, as the drop rate increases, the train-val gap decreases significantly (10.67 → 8.98 pp), but test accuracy peaks at a drop rate of 0.3 (82.90\%), indicating that overly strong regularization does not necessarily lead to better test performance. In contrast, DropPath demonstrates the most stable performance, achieving both the highest test accuracy (83.56\%) and the lowest gap (4.64 pp) at 100 epochs. R-Drop yields a modest improvement (82.94\%) through consistency constraints. Attention Dropout and Patch Dropout show limited gains, with best test accuracies of 82.34\% and 82.29\%, respectively.
 
+\paragraph{Discussion.}Overall, dropout-based regularization is effective: all methods improve test performance over the baseline (79.65\%), with DropPath achieving the largest gain and the smallest gap, indicating superior generalization. This advantage is rooted in the structural properties of ViT. Unlike CNNs, ViT layers exhibit more uniform representations and rely heavily on residual connections for feature propagation~\cite{raghu2021vision}. While standard Dropout perturbs local features, DropPath directly regularizes residual pathways, altering effective depth and information flow, and thus more effectively mitigates overfitting.
+
+In terms of parameter selection, moderate regularization is generally more effective. Standard Dropout peaks at a rate of 0.3, while larger rates provide no further gains. Attention Dropout and Patch Dropout show limited improvements: the former is less sensitive to local perturbations due to global self-attention, and the latter is robust to partial patch removal. Consequently, both methods contribute less to improving generalization.
 
 \begin{table}[t]
 \centering
@@ -18,22 +21,28 @@ rate vary across runs. Overall, the results from the 30-epoch training run gener
 \caption{Effect of dropout rate. The 100-epoch results are the main setting, while 30-epoch results serve as a short-horizon reference.}
 \label{tab:dropout}
 \resizebox{\columnwidth}{!}{
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
 Drop rate
 & \multicolumn{3}{c}{100 epochs}
-& \multicolumn{2}{c}{30 epochs} \\
-\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+& \multicolumn{3}{c}{30 epochs} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
       & Best val (\%) $\uparrow$
       & Test (\%) $\uparrow$
       & Gap (pp) $\downarrow$
       & Best val (\%) $\uparrow$
-      & Test (\%) $\uparrow$ \\
+      & Test (\%) $\uparrow$ 
+      & Gap (pp) $\downarrow$\\
+      
 \midrule
-0.1 & 82.08 & 82.39 & 10.67 & 84.44 & 84.26 \\
-0.2 & 82.06 & 82.49 & 10.70 & 84.50 & \textbf{84.74} \\
-0.3 & 82.10 & \textbf{82.90} & 10.29 & 84.36 & 84.67 \\
-0.5 & \textbf{82.88} & 82.87 & \textbf{8.98} & \textbf{84.68} & 84.50 \\
+0.1 & 82.08 & 82.39 & 10.67 & 84.44 & 84.26& 4.64 
+ \\
+0.2 & 82.06 & 82.49 & 10.70 & 84.50 & \textbf{84.74}& 3.90 
+\\
+0.3 & 82.10 & \textbf{82.90} & 10.29 & 84.36 & 84.67& 3.65 
+\\
+0.5 & \textbf{82.88} & 82.87 & \textbf{8.98} & \textbf{84.68} & 84.50& 1.93 
+\\
 \bottomrule
 \end{tabular}
 }
@@ -45,22 +54,28 @@ Drop rate
 \caption{Effect of DropPath rate.}
 \label{tab:droppath}
 \resizebox{\columnwidth}{!}{
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
 DropPath
 & \multicolumn{3}{c}{100 epochs}
-& \multicolumn{2}{c}{30 epochs} \\
-\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+& \multicolumn{3}{c}{30 epochs} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
       & Best val (\%) $\uparrow$
       & Test (\%) $\uparrow$
       & Gap (pp) $\downarrow$
       & Best val (\%) $\uparrow$
-      & Test (\%) $\uparrow$ \\
+      & Test (\%) $\uparrow$ 
+      & Gap (pp) $\downarrow$\\
+      
 \midrule
-0.05 & 83.30 & 82.81 & 9.13  & 84.86 & \textbf{85.05} \\
-0.1  & 83.56 & 83.51 & 7.86  & \textbf{85.42} & 84.94 \\
-0.2  & 83.62 & 83.17 & 6.55  & 85.06 & 84.61 \\
-0.3  & \textbf{83.68} & \textbf{83.56} & \textbf{4.64} & 83.80 & 83.51 \\
+0.05 & 83.30 & 82.81 & 9.13  & 84.86 & \textbf{85.05} &2.77 
+ \\
+0.1  & 83.56 & 83.51 & 7.86  & \textbf{85.42} & 84.94 &0.48 
+ \\
+0.2  & 83.62 & 83.17 & 6.55  & 85.06 & 84.61 &-2.52 
+  \\
+0.3  & \textbf{83.68} & \textbf{83.56} & \textbf{4.64} & 83.80 & 83.51& -4.14 
+\\
 \bottomrule
 \end{tabular}
 }
@@ -72,21 +87,25 @@ DropPath
 \caption{Effect of R-Drop.}
 \label{tab:rdrop}
 \resizebox{\columnwidth}{!}{
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
 Drop rate
 & \multicolumn{3}{c}{100 epochs}
-& \multicolumn{2}{c}{30 epochs} \\
-\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+& \multicolumn{3}{c}{30 epochs} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
       & Best val (\%) $\uparrow$
       & Test (\%) $\uparrow$
       & Gap (pp) $\downarrow$
       & Best val (\%) $\uparrow$
-      & Test (\%) $\uparrow$ \\
+      & Test (\%) $\uparrow$ 
+      & Gap (pp) $\downarrow$\\
 \midrule
-0.1 & 82.36 & 82.68 & 10.88 & 85.02 & 84.83 \\
-0.2 & \textbf{83.12} & 82.55 & \textbf{9.68} & 84.76 & \textbf{84.84} \\
-0.3 & 82.56 & \textbf{82.94} & 10.21 & \textbf{85.28} & 84.62 \\
+0.1 & 82.36 & 82.68 & 10.88 & 85.02 & 84.83 &4.06 
+ \\
+0.2 & \textbf{83.12} & 82.55 & \textbf{9.68} & 84.76 & \textbf{84.84} &3.94 
+\\
+0.3 & 82.56 & \textbf{82.94} & 10.21 & \textbf{85.28} & 84.62&3.11 
+ \\
 \bottomrule
 \end{tabular}
 }
@@ -98,22 +117,27 @@ Drop rate
 \caption{Effect of attention dropout rate.}
 \label{tab:dropattn}
 \resizebox{\columnwidth}{!}{
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
 Drop rate
 & \multicolumn{3}{c}{100 epochs}
-& \multicolumn{2}{c}{30 epochs} \\
-\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+& \multicolumn{3}{c}{30 epochs} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
       & Best val (\%) $\uparrow$
       & Test (\%) $\uparrow$
       & Gap (pp) $\downarrow$
       & Best val (\%) $\uparrow$
-      & Test (\%) $\uparrow$ \\
+      & Test (\%) $\uparrow$ 
+      & Gap (pp) $\downarrow$\\
 \midrule
-0.05 & 81.90 & 81.86 & 11.67 & 84.12 & 84.45 \\
-0.1  & \textbf{82.50} & \textbf{82.34} & \textbf{11.02} & 84.16 & 84.54 \\
-0.2  & 81.46 & 82.03 & 11.85 & 84.16 & \textbf{84.55} \\
-0.3  & 81.82 & 82.03 & 11.20 & \textbf{84.70} & 84.06 \\
+0.05 & 81.90 & 81.86 & 11.67 & 84.12 & 84.45 &5.32 
+\\
+0.1  & \textbf{82.50} & \textbf{82.34} & \textbf{11.02} & 
+84.16 & 84.54&5.20  \\
+0.2  & 81.46 & 82.03 & 11.85 & 84.16 & \textbf{84.55}&4.76 
+ \\
+0.3  & 81.82 & 82.03 & 11.20 & \textbf{84.70} & 84.06&3.94 
+ \\
 \bottomrule
 \end{tabular}
 }
@@ -125,21 +149,25 @@ Drop rate
 \caption{Effect of patch dropout rate.}
 \label{tab:droppatch}
 \resizebox{\columnwidth}{!}{
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
 Drop rate
 & \multicolumn{3}{c}{100 epochs}
-& \multicolumn{2}{c}{30 epochs} \\
-\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+& \multicolumn{3}{c}{30 epochs} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
   & Best val (\%) $\uparrow$
       & Test (\%) $\uparrow$
       & Gap (pp) $\downarrow$
       & Best val (\%) $\uparrow$
-      & Test (\%) $\uparrow$ \\
+      & Test (\%) $\uparrow$ 
+      & Gap (pp) $\downarrow$\\
 \midrule
-0.1 & 81.98 & 81.74 & 11.48 & \textbf{84.44} & \textbf{84.70} \\
-0.2 & \textbf{82.24} & \textbf{82.29} & \textbf{10.73} & 84.16 & 84.24 \\
-0.3 & 82.10 & 81.61 & 11.00 & 84.10 & 83.91 \\
+0.1 & 81.98 & 81.74 & 11.48 & \textbf{84.44} & \textbf{84.70}&3.90 
+ \\
+0.2 & \textbf{82.24} & \textbf{82.29} & \textbf{10.73} & 84.16 & 84.24& 4.32 
+\\
+0.3 & 82.10 & 81.61 & 11.00 & 84.10 & 83.91&4.12 
+ \\
 \bottomrule
 \end{tabular}
 }

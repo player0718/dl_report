@@ -6,55 +6,86 @@
 
 \subsection{Summary Table}
 \label{sec:comp:table}
-\Cref{tab:comparison} aggregates the best configuration from each
-preceding section into one table. We deliberately use the
-\emph{best} setting per family (not the average) because the question
-is which family is worth investing in, not how robust each family is
-to its own hyperparameter.
+% \Cref{tab:comparison} aggregates the best configuration from each
+% preceding section into one table. We deliberately use the
+% \emph{best} setting per family (not the average) because the question
+% is which family is worth investing in, not how robust each family is
+% to its own hyperparameter.
 
-\input{tables/comparison}
+Table~\ref{tab:main_results} first gives an overall comparison of the best
+results achieved by all methods under the same experimental setting. We
+report the best validation accuracy, the epoch at which it is achieved,
+and the corresponding test accuracy for each method. The following
+subsections then discuss these methods in more detail.
 
-\subsection{Visual Summary}
-\label{sec:comp:bar}
-\begin{figure}[t]
-  \centering
-  % \includegraphics[width=0.7\linewidth]{comparison_bar.png}  % uncomment when ready
-  \fbox{\rule{0pt}{4cm}\rule{0.65\linewidth}{0pt}}
-  \caption{Best test accuracy per regularization family, with the
-  no-regularization baseline as reference. \draftnote{Drop
-  \texttt{figures/comparison\_bar.png} and swap in the commented
-  \texttt{\textbackslash includegraphics} above. Sort bars by test
-  accuracy and annotate each with the absolute improvement over
-  baseline.}}
-  \label{fig:comparison-bar}
-\end{figure}
+\begin{table*}[t]
+\centering
+\caption{Overall comparison of the best results for all methods under 30-epoch and 100-epoch training schedules.}
+\label{tab:main_results}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.05}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{p{2.8cm}ccccc|ccccc}
+\hline
+& \multicolumn{5}{c|}{30 epochs} & \multicolumn{5}{c}{100 epochs} \\
+\cline{2-11}
+Method & Test Acc & Best Val Acc & Best Epoch & Train Loss @ Best & Val Loss @ Best
+       & Test Acc & Best Val Acc & Best Epoch & Train Loss @ Best & Val Loss @ Best \\
+\hline
+Baseline & 82.95 & 82.78 & 22 & 0.4877 & 0.6695 & 79.65 & 80.42 & 74 & 0.3236 & 0.9317 \\
+Weight Decay & 84.74 & 84.28 & 30 & 0.3772 & 0.6075 & 82.56 & 82.23 & 97 & 0.2372 & 0.7535 \\
+Dropout & 85.05 & 84.46 & 30 & 0.4548 
+ & 0.5796 & 83.68 & 83.56 & 97 & 0.4207 & 0.7933 \\
+Data Augmentation & 85.72& 85.66& 27& 1.7021& 0.5804
+& 84.97& 85.06& 94& 0.7834& 0.6242
+\\
+Label Smoothing + Early Stopping & & -- & -- & -- & -- & & 83.86 & 92 & 1.0059 & 1.3621 \\
+LLRD + Staged Fine-tuning & -- & -- & -- & -- & -- & 85.33 & 86.06 & 22 & 0.5026 & 0.5633 \\
+\hline
+\end{tabular}%
+}
+\end{table*}
 
-\subsection{Weight Decay Analysis}
-\label{sec:comp:wd-analysis}
-With the updated 100-epoch horizon, weight decay behaves as a weak but
-measurable regularization knob. The no-decay control reaches $81.81\%$
-test accuracy, while $\lambda=5\times10^{-2}$ reaches the best validation
-accuracy ($82.56\%$) and the best test accuracy ($82.23\%$). The absolute
-gain is modest ($+0.42$ percentage points), and the neighboring nonzero
-settings $\lambda=10^{-4}$ and $\lambda=10^{-2}$ obtain similar test
-accuracy ($82.21\%$ and $82.17\%$). This pattern suggests a broad,
-low-amplitude optimum rather than a sharply tuned coefficient.
+% \input{tables/comparison}
 
-\Cref{fig:wd-best-val,fig:wd-gap} also shows the cost of making the
-regularizer too strong. The aggressive setting $\lambda=10^{-1}$ drops
-to $81.25\%$ test accuracy, below the no-decay control. Its lower
-training accuracy indicates capacity suppression rather than useful
-regularization. Compared with the original 30-epoch sweep, the 100-epoch
-run exhibits a much larger train--val gap (about 11 percentage points
-instead of about 5), so moderate decay becomes more useful only after the
-longer schedule creates more overfitting pressure. Even then, the effect
-size remains small enough that the ranking should be treated cautiously
-without multi-seed confirmation.
+% \subsection{Visual Summary}
+% \label{sec:comp:bar}
+% \begin{figure}[t]
+%   \centering
+%   % \includegraphics[width=0.7\linewidth]{comparison_bar.png}  % uncomment when ready
+%   \fbox{\rule{0pt}{4cm}\rule{0.65\linewidth}{0pt}}
+%   \caption{Best test accuracy per regularization family, with the
+%   no-regularization baseline as reference. \draftnote{Drop
+%   \texttt{figures/comparison\_bar.png} and swap in the commented
+%   \texttt{\textbackslash includegraphics} above. Sort bars by test
+%   accuracy and annotate each with the absolute improvement over
+%   baseline.}}
+%   \label{fig:comparison-bar}
+% \end{figure}
 
-\subsection{Dropout Analysis}
-Overall, dropout-based regularization is effective; compared to the baseline (79.65\%), all methods improved test performance, with DropPath showing the most significant improvement while also significantly reducing the gap, demonstrating stronger generalization ability. The advantage of DropPath stems from the structural characteristics of ViT. Unlike CNNs, ViT layers have more uniform representations, and features are primarily propagated through residual connections rather than by constructing new representations layer by layer. Previous studies have shown that skip connections in ViTs play a dominant role in information propagation, making the model behave more like an iterative optimization of the same representation~\cite{raghu2021vision}. In this context, standard Dropout only applies perturbations to local features, whereas DropPath acts directly on the residual paths, performing regularization at the level of information flow. By randomly dropping entire sub-layers, DropPath alters the effective depth and feature propagation paths, thereby more effectively mitigating overfitting.
+% \subsection{Weight Decay Analysis}
+% \label{sec:comp:wd-analysis}
+% With the updated 100-epoch horizon, weight decay behaves as a weak but
+% measurable regularization knob. The no-decay control reaches $81.81\%$
+% test accuracy, while $\lambda=5\times10^{-2}$ reaches the best validation
+% accuracy ($82.56\%$) and the best test accuracy ($82.23\%$). The absolute
+% gain is modest ($+0.42$ percentage points), and the neighboring nonzero
+% settings $\lambda=10^{-4}$ and $\lambda=10^{-2}$ obtain similar test
+% accuracy ($82.21\%$ and $82.17\%$). This pattern suggests a broad,
+% low-amplitude optimum rather than a sharply tuned coefficient.
 
-From the perspective of parameter selection, moderate regularization is more reasonable. Standard Dropout performs best at a rate of 0.3, while higher rates do not yield further improvements. In contrast, Attention Dropout and Patch Dropout have limited impact: the former is insensitive to local perturbations due to the global modeling capability of self-attention; the latter is robust to the loss of a small number of patches because of ViT’s global aggregation. Therefore, these two methods struggle to significantly improve generalization performance.
+% \Cref{fig:wd-best-val,fig:wd-gap} also shows the cost of making the
+% regularizer too strong. The aggressive setting $\lambda=10^{-1}$ drops
+% to $81.25\%$ test accuracy, below the no-decay control. Its lower
+% training accuracy indicates capacity suppression rather than useful
+% regularization. Compared with the original 30-epoch sweep, the 100-epoch
+% run exhibits a much larger train--val gap (about 11 percentage points
+% instead of about 5), so moderate decay becomes more useful only after the
+% longer schedule creates more overfitting pressure. Even then, the effect
+% size remains small enough that the ranking should be treated cautiously
+% without multi-seed confirmation.
+
 
 \subsection{Which Family Matters Most for ViT?}
 \label{sec:comp:discussion}

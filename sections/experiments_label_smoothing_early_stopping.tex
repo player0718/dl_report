@@ -5,19 +5,18 @@
 
 \paragraph{Experiment focus.}
 This subsection reports the result of combining label smoothing and early stopping under the shared ViT-Tiny/16 fine-tuning protocol. The model, dataset split, optimizer, learning-rate schedule, batch size, and evaluation rule remain the same as in the shared protocol. The only changes are that label smoothing is enabled with $\epsilon = 0.1$, and the best checkpoint is selected using validation accuracy with an early-stopping patience of 25 epochs.
-
 \begin{table}[t]
 \centering
-\caption{Effect of label smoothing and early stopping on ViT-Tiny/16 fine-tuned on CIFAR-100. The best checkpoint is selected by validation accuracy.}
+\small
+\caption{Effect of label smoothing and early stopping on ViT-Tiny/16.}
 \begin{tabular}{lccccc}
 \toprule
-Method & Best Val Acc & Test Acc & Best Epoch & Train Loss @ Best & Val Loss @ Best \\
+Method & Val & Test & Epoch & Train L & Val L \\
 \midrule
-Label Smoothing + Early Stopping & 83.86 & 83.58 & 92 & 1.0059 & 1.3621 \\
+LS + ES & 83.86 & 83.58 & 92 & 1.01 & 1.36 \\
 \bottomrule
 \end{tabular}
 \end{table}
-
 \paragraph{Results.}
 The combined label smoothing and early stopping run achieves a best validation accuracy of 83.86\% at epoch 92. The corresponding test accuracy is 83.58\%, with a test loss of 1.3598. At the best-validation epoch, the training accuracy is 93.12\%, giving a train--validation gap of 9.26 percentage points. This indicates that the model still overfits, but the gap is smaller than the approximately 11 percentage-point gap observed in the longer no-regularization baseline used in the weight-decay comparison.
 
