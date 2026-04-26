@@ -1,42 +1,31 @@
-\subsubsection{Label Smoothing and Early Stopping Results}
+\subsection{Label Smoothing and Early Stopping Results}
 \label{sec:lsearly}
 
 % Owner: Member 5. Bullet-level skeleton; expand to ~1 page.
 
-\paragraph{Label smoothing results.}
-\draftnote{Expand this subsection into prose using the checklist below.}
-\begin{itemize}
-  \item Reference the method definition in \cref{sec:method:lsearly}
-        and note that all shared training details follow
-        \cref{sec:exp:training,sec:exp:eval}.
-  \item Report best val acc / test acc / train--val gap / train time
-        in a table.
-  \item Briefly discuss confidence calibration (e.g. softmax max
-        probability or ECE), since this is where label smoothing
-        \citep{szegedy2016rethinking,muller2019labelsmoothing}
-        differs most from other regularizers.
-\end{itemize}
+\paragraph{Experiment focus.}
+This subsection reports the result of combining label smoothing and early stopping under the shared ViT-Tiny/16 fine-tuning protocol. The model, dataset split, optimizer, learning-rate schedule, batch size, and evaluation rule remain the same as in the shared protocol. The only changes are that label smoothing is enabled with $\epsilon = 0.1$, and the best checkpoint is selected using validation accuracy with an early-stopping patience of 25 epochs.
 
-\paragraph{Early stopping results.}
-\draftnote{Expand this subsection into prose using the checklist below.}
-\begin{itemize}
-  \item Reference the method definition in \cref{sec:method:lsearly}
-        and note the shared protocol in
-        \cref{sec:exp:training,sec:exp:eval}.
-  \item Compare against fixed 30-epoch training: at which epoch does
-        early stopping trigger? How much compute saved?
-  \item Test accuracy at the early-stopped checkpoint vs final-epoch
-        checkpoint.
-\end{itemize}
+\begin{table}[t]
+\centering
+\caption{Effect of label smoothing and early stopping on ViT-Tiny/16 fine-tuned on CIFAR-100. The best checkpoint is selected by validation accuracy.}
+\begin{tabular}{lccccc}
+\toprule
+Method & Best Val Acc & Test Acc & Best Epoch & Train Loss @ Best & Val Loss @ Best \\
+\midrule
+Label Smoothing + Early Stopping & 83.86 & 83.58 & 92 & 1.0059 & 1.3621 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Results.}
+The combined label smoothing and early stopping run achieves a best validation accuracy of 83.86\% at epoch 92. The corresponding test accuracy is 83.58\%, with a test loss of 1.3598. At the best-validation epoch, the training accuracy is 93.12\%, giving a train--validation gap of 9.26 percentage points. This indicates that the model still overfits, but the gap is smaller than the approximately 11 percentage-point gap observed in the longer no-regularization baseline used in the weight-decay comparison.
+
+\paragraph{Label smoothing analysis.}
+Label smoothing improves the training target by discouraging the model from becoming overly confident in a single class. This is especially relevant for CIFAR-100 because the dataset contains 100 fine-grained classes, and some categories are visually similar. Compared with hard one-hot labels, the softened supervision signal encourages less extreme predictions and may improve generalization on the test set. In our run, the method reaches 83.58\% test accuracy, which is higher than the clean baseline reported in the overall comparison table.
+
+\paragraph{Early stopping analysis.}
+Early stopping helps by selecting the checkpoint with the best validation accuracy instead of blindly using the final epoch. In this run, the best checkpoint occurs at epoch 92. Because the patience value is 25 and the full schedule is 100 epochs, early stopping does not substantially reduce training cost in this particular run. Its main benefit here is checkpoint selection rather than large compute savings. Therefore, early stopping should be interpreted as a training-process regularizer that limits the selected model to the point of best validation performance.
 
 \paragraph{Discussion.}
-\label{sec:lsearly:discussion}
-\draftnote{Answer the three Member 5 questions in short paragraphs.}
-\begin{enumerate}
-  \item Does label smoothing improve generalization here?
-  \item Does early stopping actually help, or is it just ``stop
-        early''?
-  \item How do these output- and process-level regularizers relate to
-        the parameter-level (\cref{sec:wd,sec:dropout}) and
-        data-level (\cref{sec:augmentation}) ones?
-\end{enumerate}
+Overall, label smoothing and early stopping provide a clear generalization improvement over the clean baseline. The method improves test accuracy while keeping implementation cost low, since label smoothing only requires changing the loss function and early stopping only requires tracking validation accuracy. However, because this result is based on a single run with $\epsilon = 0.1$ and patience 25, the conclusion should be interpreted as evidence for the usefulness of this setting rather than a full hyperparameter study.

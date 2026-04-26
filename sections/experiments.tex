@@ -57,6 +57,40 @@ template derived from the baseline method in
 regularization-related fields needed for that family so that
 comparisons remain controlled.
 
+
+\begin{table}[t]
+\centering
+\caption{Baseline training configuration.}
+\label{tab:baseline_config}
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{ll}
+\hline
+Item & Setting \\
+\hline
+Backbone & ViT-Tiny/16 \\
+Pretraining & ImageNet pretrained \\
+Dataset & CIFAR-100 \\
+Input size & $224 \times 224$ \\
+Batch size & 64 \\
+Epochs & 30 \& 100 \\
+Optimizer & AdamW \\
+Base learning rate & $3\times10^{-4}$ \\
+Weight decay & 0.0 \\
+Warmup epochs & 3 \\
+Learning-rate schedule & Linear warmup + cosine decay \\
+Dropout & 0.0 \\
+Attention Dropout & 0.0 \\
+Patch Dropout & 0.0 \\
+Drop path & 0.0 \\
+Label smoothing & 0.0 \\
+Early stopping & Disabled \\
+Validation split & 10\% of training set \\
+\hline
+\end{tabular}
+\end{table}
+
 \subsection{Evaluation Metrics}
 \label{sec:exp:eval}
 For each run we record per-epoch training loss, training accuracy,
@@ -70,10 +104,3 @@ configuration, report mean$\pm$std here; otherwise explicitly note in
 the results and limitations that the current draft uses single-seed
 runs.}
 
-\subsection{Results by Method}
-\label{sec:results}
-\input{sections/experiments_baseline}
-\input{sections/experiments_weight_decay}
-\input{sections/experiments_dropout}
-\input{sections/experiments_augmentation}
-\input{sections/experiments_label_smoothing_early_stopping}

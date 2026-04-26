@@ -1,4 +1,4 @@
-\subsubsection{Dropout Results}
+\subsection{Dropout Results}
 \label{sec:dropout}
 
 % Owner: Member 3. Bullet-level skeleton; expand to ~1 page.
@@ -7,24 +7,140 @@
 We evaluate the dropout variants defined in
 \cref{sec:method:dropout} under the shared protocol of
 \cref{sec:exp:training,sec:exp:eval}. Only the dropout placement and
-rate vary across runs.
+rate vary across runs. Overall, the results from the 30-epoch training run generally outperformed those from the 100-epoch run, indicating that longer training leads to overfitting; therefore, we primarily analyze the generalization performance under the 100-epoch setting.
 
-\paragraph{Results.}
-\draftnote{Expand this subsection into prose using the checklist below.}
-\begin{itemize}
-  \item Results table (best val acc / test acc / train--val gap /
-        train time per dropout rate). Mirror the column layout of
-        \cref{tab:wd}.
-  \item Learning curves figure (overlay train/val acc per rate).
-  \item Convergence-speed analysis: how does training-loss-vs-epoch
-        change with $p$?
-\end{itemize}
+\paragraph{Results summary.} For standard Dropout, as the drop rate increases, the train-val gap decreases significantly (10.67 → 8.98 pp), but test accuracy peaks at a drop rate of 0.3 (82.90\%), indicating that overly strong regularization does not necessarily lead to better test performance. In contrast, DropPath demonstrates the most stable performance, achieving both the highest test accuracy (83.56\%) and the lowest gap (4.64 pp) at 100 epochs. R-Drop yields a modest improvement (82.94\%) through consistency constraints. Attention Dropout and Patch Dropout show limited gains, with best test accuracies of 82.34\% and 82.29\%, respectively.
 
-\paragraph{Discussion.}
-\label{sec:dropout:discussion}
-\draftnote{Answer the three Member 3 questions in short paragraphs.}
-\begin{enumerate}
-  \item Does dropout help on this task?
-  \item Small vs large dropout: which is more reasonable?
-  \item How much does dropout slow convergence?
-\end{enumerate}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Effect of dropout rate. The 100-epoch results are the main setting, while 30-epoch results serve as a short-horizon reference.}
+\label{tab:dropout}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lccccc}
+\toprule
+Drop rate
+& \multicolumn{3}{c}{100 epochs}
+& \multicolumn{2}{c}{30 epochs} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+      & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$
+      & Gap (pp) $\downarrow$
+      & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$ \\
+\midrule
+0.1 & 82.08 & 82.39 & 10.67 & 84.44 & 84.26 \\
+0.2 & 82.06 & 82.49 & 10.70 & 84.50 & \textbf{84.74} \\
+0.3 & 82.10 & \textbf{82.90} & 10.29 & 84.36 & 84.67 \\
+0.5 & \textbf{82.88} & 82.87 & \textbf{8.98} & \textbf{84.68} & 84.50 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Effect of DropPath rate.}
+\label{tab:droppath}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lccccc}
+\toprule
+DropPath
+& \multicolumn{3}{c}{100 epochs}
+& \multicolumn{2}{c}{30 epochs} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+      & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$
+      & Gap (pp) $\downarrow$
+      & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$ \\
+\midrule
+0.05 & 83.30 & 82.81 & 9.13  & 84.86 & \textbf{85.05} \\
+0.1  & 83.56 & 83.51 & 7.86  & \textbf{85.42} & 84.94 \\
+0.2  & 83.62 & 83.17 & 6.55  & 85.06 & 84.61 \\
+0.3  & \textbf{83.68} & \textbf{83.56} & \textbf{4.64} & 83.80 & 83.51 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Effect of R-Drop.}
+\label{tab:rdrop}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lccccc}
+\toprule
+Drop rate
+& \multicolumn{3}{c}{100 epochs}
+& \multicolumn{2}{c}{30 epochs} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+      & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$
+      & Gap (pp) $\downarrow$
+      & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$ \\
+\midrule
+0.1 & 82.36 & 82.68 & 10.88 & 85.02 & 84.83 \\
+0.2 & \textbf{83.12} & 82.55 & \textbf{9.68} & 84.76 & \textbf{84.84} \\
+0.3 & 82.56 & \textbf{82.94} & 10.21 & \textbf{85.28} & 84.62 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Effect of attention dropout rate.}
+\label{tab:dropattn}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lccccc}
+\toprule
+Drop rate
+& \multicolumn{3}{c}{100 epochs}
+& \multicolumn{2}{c}{30 epochs} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+      & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$
+      & Gap (pp) $\downarrow$
+      & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$ \\
+\midrule
+0.05 & 81.90 & 81.86 & 11.67 & 84.12 & 84.45 \\
+0.1  & \textbf{82.50} & \textbf{82.34} & \textbf{11.02} & 84.16 & 84.54 \\
+0.2  & 81.46 & 82.03 & 11.85 & 84.16 & \textbf{84.55} \\
+0.3  & 81.82 & 82.03 & 11.20 & \textbf{84.70} & 84.06 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Effect of patch dropout rate.}
+\label{tab:droppatch}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lccccc}
+\toprule
+Drop rate
+& \multicolumn{3}{c}{100 epochs}
+& \multicolumn{2}{c}{30 epochs} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+  & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$
+      & Gap (pp) $\downarrow$
+      & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$ \\
+\midrule
+0.1 & 81.98 & 81.74 & 11.48 & \textbf{84.44} & \textbf{84.70} \\
+0.2 & \textbf{82.24} & \textbf{82.29} & \textbf{10.73} & 84.16 & 84.24 \\
+0.3 & 82.10 & 81.61 & 11.00 & 84.10 & 83.91 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

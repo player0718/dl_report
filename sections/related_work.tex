@@ -5,33 +5,43 @@
 % methodology, not paper-by-paper.
 
 \paragraph{Vision Transformers and small-data training.}
-% 1 paragraph: ViT \citep{dosovitskiy2021vit} matches CNNs at scale but
-% trails them when trained from scratch on small datasets. DeiT
-% \citep{touvron2021deit} closes much of this gap with a heavy
-% regularization and augmentation recipe (RandAugment, Mixup, CutMix,
-% stochastic depth, label smoothing), demonstrating that for ViTs
-% \emph{regularization is not optional}. We revisit this lesson in the
-% fine-tuning regime on CIFAR-100.
-\draftnote{3--4 sentences: ViT, DeiT, ConvNets-as-baselines context.}
+Vision Transformer (ViT) showed that a pure transformer can work well for image classification when it is trained at large scale and then transferred to downstream tasks \citep{dosovitskiy2021vit}. At the same time, its original results also suggested that data and training recipe matter a lot, especially when the target task is smaller than the large-scale pre-training setup. DeiT later showed that ViTs can be trained in a more data-efficient way, but only with a strong recipe that combines several regularization and augmentation components \citep{touvron2021deit}. In this sense, convolutional networks remain a useful baseline in small-data settings, and our study revisits this issue in the fine-tuning regime on CIFAR-100.
 
 \paragraph{Regularization in modern training pipelines.}
-% 1 paragraph: Modern recipes routinely combine several regularizers:
-% decoupled weight decay in AdamW \citep{loshchilov2019adamw}, dropout
-% \citep{srivastava2014dropout} and stochastic depth
-% \citep{huang2016stochasticdepth}, label smoothing
-% \citep{szegedy2016rethinking,muller2019labelsmoothing}, and an
-% augmentation suite of RandAugment \citep{cubuk2020randaugment},
-% Mixup \citep{zhang2018mixup}, and CutMix \citep{yun2019cutmix}. These
-% are usually tuned jointly, which makes their individual contributions
-% unclear---the gap our controlled study is meant to fill.
-\draftnote{3--4 sentences covering AdamW, dropout/droppath, label
-smoothing, and the modern aug suite. Cite the keys above.}
+Modern image classification pipelines rarely rely on a single regularizer. Instead, they usually combine AdamW for decoupled weight decay \citep{loshchilov2019adamw}, dropout or stochastic depth for model regularization \citep{srivastava2014dropout,huang2016stochasticdepth}, label smoothing for softer targets \citep{szegedy2016rethinking,muller2019labelsmoothing}, and a strong augmentation suite such as RandAugment, Mixup, and CutMix \citep{cubuk2020randaugment,zhang2018mixup,yun2019cutmix}. These choices often work well together, but they are usually tuned as one package, which makes it hard to tell which part is responsible for a gain. This motivates a controlled comparison where we vary one regularization axis at a time.
 
 \paragraph{Scope of this work.}
-% 1 short paragraph: We do not propose a new regularizer or model.
-% This is a controlled empirical study under a single fixed budget,
-% varying one regularization axis at a time. Our goal is comparative
-% understanding for ViT in the small-data fine-tuning regime, not a
-% claim of state of the art.
-\draftnote{Frame the paper as a controlled empirical study, not a
-novel-method paper. This sets reviewer expectations correctly.}
+This paper is a controlled empirical study rather than a novel-method paper. We do not introduce a new model or a new regularizer; instead, we keep the backbone, dataset, and training budget fixed, and compare different regularization choices under the same setting. Our goal is to better understand how these methods behave for ViT fine-tuning on CIFAR-100, rather than to claim a new state-of-the-art result.
+
+
+% \paragraph{Vision Transformers and small-data training.}
+% % 1 paragraph: ViT \citep{dosovitskiy2021vit} matches CNNs at scale but
+% % trails them when trained from scratch on small datasets. DeiT
+% % \citep{touvron2021deit} closes much of this gap with a heavy
+% % regularization and augmentation recipe (RandAugment, Mixup, CutMix,
+% % stochastic depth, label smoothing), demonstrating that for ViTs
+% % \emph{regularization is not optional}. We revisit this lesson in the
+% % fine-tuning regime on CIFAR-100.
+% \draftnote{3--4 sentences: ViT, DeiT, ConvNets-as-baselines context.}
+
+% \paragraph{Regularization in modern training pipelines.}
+% % 1 paragraph: Modern recipes routinely combine several regularizers:
+% % decoupled weight decay in AdamW \citep{loshchilov2019adamw}, dropout
+% % \citep{srivastava2014dropout} and stochastic depth
+% % \citep{huang2016stochasticdepth}, label smoothing
+% % \citep{szegedy2016rethinking,muller2019labelsmoothing}, and an
+% % augmentation suite of RandAugment \citep{cubuk2020randaugment},
+% % Mixup \citep{zhang2018mixup}, and CutMix \citep{yun2019cutmix}. These
+% % are usually tuned jointly, which makes their individual contributions
+% % unclear---the gap our controlled study is meant to fill.
+% \draftnote{3--4 sentences covering AdamW, dropout/droppath, label
+% smoothing, and the modern aug suite. Cite the keys above.}
+
+% \paragraph{Scope of this work.}
+% % 1 short paragraph: We do not propose a new regularizer or model.
+% % This is a controlled empirical study under a single fixed budget,
+% % varying one regularization axis at a time. Our goal is comparative
+% % understanding for ViT in the small-data fine-tuning regime, not a
+% % claim of state of the art.
+% \draftnote{Frame the paper as a controlled empirical study, not a
+% novel-method paper. This sets reviewer expectations correctly.}

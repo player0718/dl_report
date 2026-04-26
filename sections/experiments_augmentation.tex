@@ -1,31 +1,59 @@
-\subsubsection{Data Augmentation Results}
+\subsection{Data Augmentation Results}
 \label{sec:augmentation}
 
 % Owner: Member 4. Bullet-level skeleton; expand to ~1--1.5 pages
 % (this section can be the most visual one).
 
+\begin{table}[t]
+  \centering
+  \small
+  \caption{Effect of different data augmentation strategies.}
+  \label{tab:data_aug}
+  \resizebox{\columnwidth}{!}{%
+  \begin{tabular}{lccccc}
+    \toprule
+    Augmentation Methods $\lambda$
+      & \multicolumn{3}{c}{100 epochs}
+      & \multicolumn{2}{c}{30 epochs} \\
+    \cmidrule(lr){2-4}\cmidrule(lr){5-6}
+      & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$
+      & Gap (pp) $\downarrow$
+      & Best val (\%) $\uparrow$
+      & Test (\%) $\uparrow$ \\
+    \midrule
+    Baseline& 81.90 & 81.81 & 11.23 & 84.50 & 
+84.75 \\
+    RandAugment + Random Erasing& 84.10& 83.56& 0.029& 85.12& 85.25
+\\
+    Mixup + Cutmix& \textbf{85.06}& \textbf{84.97}& 1.249& \textbf{85.66}& \textbf{85.72}
+\\
+    Combined& 84.74& 84.69& \textbf{-9.073}& 85.30& 84.98
+\\
+    \bottomrule
+  \end{tabular}
+  }
+\end{table}
+
+
 \paragraph{Experiment focus.}
-We evaluate the augmentation families defined in \cref{sec:method:aug}
-under the shared protocol of \cref{sec:exp:training,sec:exp:eval}.
-Only the data pipeline changes; the model, optimizer, schedule, and
-checkpoint-selection rule remain fixed.
+We evaluate the augmentation suites from \cref{sec:method:aug} to quantify their impact on ViT-Tiny's generalization. Since ViTs lack CNN-like inductive biases, they overfit easily on CIFAR-100. This experiment scales training difficulty from pixel-level noise (RandAugment+RE) to manifold smoothing (Mixup+Cutmix) and a Combined approach, holding all other optimization factors constant.
 
 \paragraph{Results.}
-\draftnote{Expand this subsection into prose using the checklist below.}
-\begin{itemize}
-  \item Table: per augmentation (or per combination), best val acc /
-        test acc / train--val gap / train time.
-  \item Curves figure overlaying val accuracy per augmentation.
-  \item Optional: a robustness probe (e.g. corruption noise) if time
-        permits; otherwise skip.
-\end{itemize}
+
+The empirical results for the data augmentation experiments, summarized in \cref{tab:data_aug}, demonstrate that data-level regularization provides the most significant performance gains among all investigated regularization families.
+
+The application of RandAugment and Random Erasing increases test accuracy to $83.56\%$ and drastically reduces the gap to nearly zero ($0.029$ pp). However, the most effective individual strategy is Mixup + Cutmix, which achieves the highest performance in both training horizons, reaching a peak test accuracy of $85.72\%$ at 30 epochs and $84.97\%$ at 100 epochs. Notably, Mixup + Cutmix outperforms the baseline by approximately 3.16 pp at 100 epochs, marking the highest accuracy improvement across all regularization families studied in this report.
+
+Interestingly, the Combined strategy (RandAugment + Random Erasing + Mixup + Cutmix) results in a negative gap of -9.073 pp. This implies that the training objective became significantly more difficult than the validation task, suggesting a regime of "over-regularization." While this combination yields robust results ($84.69\%$ test accuracy), it slightly underperforms the standalone Mixup + Cutmix strategy, indicating that excessive augmentation can eventually suppress the model’s effective capacity to learn the underlying distribution.
 
 \paragraph{Discussion.}
 \label{sec:aug:discussion}
-\draftnote{Answer the three Member 4 questions in short paragraphs.}
-\begin{enumerate}
-  \item Which augmentation is most effective?
-  \item How big is the gap between simple and strong augmentation?
-  \item Is data-level regularization more effective than
-        parameter-level (cross-reference \cref{sec:wd,sec:dropout})?
-\end{enumerate}
+
+The results demonstrate that data augmentation is the most potent regularization family for ViT-Tiny on CIFAR-100. We analyze the underlying mechanisms and trade-offs as follows:
+
+\textbf{Mechanisms of Improvement:} For individual strategies, the performance boost stems from compensating for the Vision Transformer's lack of inductive biases. RandAugment and Random Erasing introduce local invariance and robustness to occlusion, while Mixup and Cutmix facilitate global dependency modeling. By forcing the attention mechanism to recognize objects from partial or blended patches, these methods smooth the decision manifold and effectively expand the limited sample size of CIFAR-100.
+
+\textbf{The Negative Gap in Combined Strategy:} The emergence of a substantial negative train--val gap (-9.073 pp) indicates that the training objective became significantly more difficult than the validation task. In this regime, the combination of stochastic pixel transformations and regional mixing creates a "hard" training distribution that prevents the model from minimizing training loss effectively, acting as an extreme deterrent to memorization.
+
+\textbf{Model Capacity and Distortion Trade-offs:} The performance degradation in the Combined strategy ($84.69\%$ vs $84.97\%$ test accuracy) is likely due to the limited capacity of the ViT-Tiny backbone. When multiple aggressive augmentations are stacked, the cumulative image distortion—where patches are both transformed by RandAugment and then mixed/cut with other samples—reaches a point where semantic information is significantly compromised. For a parameter-constrained model, this "information loss" exceeds its representative power, leading to underfitting. To achieve a more synergistic effect, a superior strategy might involve reducing the intensity of each augmentation (e.g., lower Mixup alpha or RandAugment magnitude) when combining them, thereby balancing structural diversity with signal integrity.

@@ -51,6 +51,11 @@ longer schedule creates more overfitting pressure. Even then, the effect
 size remains small enough that the ranking should be treated cautiously
 without multi-seed confirmation.
 
+\subsection{Dropout Analysis}
+Overall, dropout-based regularization is effective; compared to the baseline (79.65\%), all methods improved test performance, with DropPath showing the most significant improvement while also significantly reducing the gap, demonstrating stronger generalization ability. The advantage of DropPath stems from the structural characteristics of ViT. Unlike CNNs, ViT layers have more uniform representations, and features are primarily propagated through residual connections rather than by constructing new representations layer by layer. Previous studies have shown that skip connections in ViTs play a dominant role in information propagation, making the model behave more like an iterative optimization of the same representation~\cite{raghu2021vision}. In this context, standard Dropout only applies perturbations to local features, whereas DropPath acts directly on the residual paths, performing regularization at the level of information flow. By randomly dropping entire sub-layers, DropPath alters the effective depth and feature propagation paths, thereby more effectively mitigating overfitting.
+
+From the perspective of parameter selection, moderate regularization is more reasonable. Standard Dropout performs best at a rate of 0.3, while higher rates do not yield further improvements. In contrast, Attention Dropout and Patch Dropout have limited impact: the former is insensitive to local perturbations due to the global modeling capability of self-attention; the latter is robust to the loss of a small number of patches because of ViT’s global aggregation. Therefore, these two methods struggle to significantly improve generalization performance.
+
 \subsection{Which Family Matters Most for ViT?}
 \label{sec:comp:discussion}
 The four regularizer families correspond to four levels at which a

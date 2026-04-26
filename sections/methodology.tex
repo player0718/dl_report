@@ -11,63 +11,94 @@ experiments evaluate.
 
 \subsection{Baseline}
 \label{sec:method:baseline}
-Our reference system uses ViT-Tiny/16 fine-tuned on CIFAR-100 with no
-explicit regularization beyond the minimal preprocessing required by the
-model. Concretely, weight decay is set to $0$, dropout is disabled, no
-label smoothing is used, early stopping is disabled, and the input
-pipeline is limited to resize plus ImageNet normalization. This
-baseline establishes the overfitting regime that the remaining methods
-attempt to improve upon.
+Our reference system uses a pretrained ViT-Tiny/16 model fine-tuned on CIFAR-100 under a clean and controlled setting. We disable additional regularization terms beyond the minimal preprocessing needed by the model: weight decay is set to $0$, dropout is disabled, no label smoothing is applied, and early stopping is not used. The input pipeline is limited to image resize and normalization, without stronger augmentation strategies. This baseline serves as a common reference point for all later comparisons, so that the effect of each optimization method can be examined more clearly.
 
 \subsection{Weight Decay}
 \label{sec:method:wd}
-We study decoupled weight decay in AdamW \citep{loshchilov2019adamw}
-by sweeping
+
+We study decoupled weight decay in AdamW \citep{loshchilov2019adamw} by sweeping
 \[
-  \lambda \in \{0,\, 10^{-4},\, 10^{-2},\, 5\times 10^{-2},\, 10^{-1}\}.
+  \lambda \in \{0,\,10^{-4},\,10^{-2},\,5\times10^{-2},\,10^{-1}\}.
 \]
-Weight decay is the only parameter-level regularizer varied in this
-study; all other components of the optimization pipeline are fixed to
-the shared baseline in \cref{sec:method:baseline,sec:exp:training}. This
-design isolates whether shrinking parameter norms during fine-tuning can
-improve generalization without confounding the comparison with changes
-in augmentation, architecture, or training budget.
+Weight decay is the only parameter-level regularizer varied in this study, while all other optimization settings follow the shared baseline in \cref{sec:method:baseline,sec:exp:training}. This isolates whether shrinking parameter norms during fine-tuning improves generalization without confounding effects from augmentation, architecture, or training budget.
 
-The sweep spans three qualitatively different regimes. The first regime,
-$\lambda \in \{0,10^{-4}\}$, is effectively a no-decay control and tests
-whether a very small penalty is distinguishable from the baseline. The
-second regime, $\lambda=10^{-2}$, covers the light regularization range
-commonly used with AdamW in modern vision training pipelines. The third
-regime, $\lambda \in \{5\times10^{-2},10^{-1}\}$, probes substantially
-stronger shrinkage, including a DeiT-style value
-\citep{touvron2021deit} and a deliberately aggressive setting intended
-to expose the onset of underfitting.
+The sweep covers three regimes: near-zero decay, $\lambda \in \{0,10^{-4}\}$; light regularization, $\lambda=10^{-2}$; and stronger shrinkage, $\lambda \in \{5\times10^{-2},10^{-1}\}$, including a DeiT-style value \citep{touvron2021deit} and an aggressive setting that may reveal underfitting.
 
-Because the model is initialized from an ImageNet-pretrained checkpoint
-and fine-tuned for only 30 epochs, the expected effect size is smaller
-than in from-scratch ViT training. The purpose of this sweep is
-therefore not only to identify the best coefficient, but also to answer
-whether weight decay is a meaningful regularization knob at all in this
-short-horizon fine-tuning regime. Concretely, the experiment asks three
-questions: whether any $\lambda>0$ improves validation or test
-performance over $\lambda=0$, whether the response curve shows a clear
-optimum or only a broad plateau, and whether stronger decay reduces
-overfitting or instead suppresses effective model capacity.
+Since the model is initialized from an ImageNet-pretrained checkpoint and fine-tuned for only 30 epochs, the sweep mainly tests whether weight decay remains a meaningful regularization knob in this short fine-tuning setting, and whether larger values reduce overfitting or instead suppress model capacity.
 
 \subsection{Dropout}
 \label{sec:method:dropout}
-\draftnote{Member 3: define the dropout variant as a method, not as an
-experiment paragraph. State where dropout is inserted (head only, MLP
-block, or attention output), which rates are swept, and why that
-placement is the cleanest controlled comparison for ViT-Tiny.}
+This experiment primarily compares various dropout-based regularization methods under different regularization strengths. 
+
+\paragraph{Standard Dropout.}
+Applied to the MLP or projection layers in the Transformer to randomly mask neurons.
+The drop rate is selected from $\{0, 0.1, 0.2, 0.3, 0.5\}$ to study the effect from no regularization to strong regularization.
+
+\paragraph{DropPath.}
+Applied to the residual branches, randomly dropping entire sublayers (stochastic depth).
+The drop path rate is chosen from $\{0, 0.05, 0.1, 0.2, 0.3\}$, as excessively large values may reduce the effective network depth.
+
+\paragraph{Attention Dropout.}
+Applied to the self-attention weights to reduce over-reliance on a few dominant connections.
+The attention dropout rate is selected from $\{0, 0.05, 0.1, 0.2, 0.3\}$.
+
+\paragraph{Patch Dropout.}
+Randomly discards a subset of input image patches at the token level to improve robustness to local information loss.
+The patch drop rate is set to $\{0, 0.1, 0.2, 0.3\}$.
+
+\paragraph{R-Drop.}
+Built upon standard dropout, R-Drop\cite{wu2021r} introduces a consistency regularization between two stochastic forward passes.
+Given the same input $x$, two independent forward passes are performed:
+\[
+p_1 = f_{\theta}(x), \quad p_2 = f_{\theta}(x)
+\]
+The training objective combines cross-entropy and symmetric KL divergence:
+\begin{equation}
+\begin{aligned}
+\mathcal{L}
+&=
+\frac{1}{2}
+\left(
+\mathcal{L}_{CE}(p_1, y)
++
+\mathcal{L}_{CE}(p_2, y)
+\right) \\
+&\quad
++
+\lambda \cdot
+\frac{1}{2}
+\left[
+D_{KL}(p_1 \parallel p_2)
++
+D_{KL}(p_2 \parallel p_1)
+\right]
+\end{aligned}
+\end{equation}
+where $\lambda = 1.0$ balances the classification loss and the consistency constraint. The drop rate is selected from $\{0.1, 0.2, 0.3\}$.
+
 
 \subsection{Data Augmentation}
 \label{sec:method:aug}
-\draftnote{Member 4: define the augmentation family here. List the
-augmentations under study (Random Crop, Horizontal Flip, Color Jitter,
-RandAugment, Mixup, CutMix), state whether the primary comparison is
-one-at-a-time or light-versus-heavy combinations, and name the key
-hyperparameters that will be swept.}
+
+Data augmentation serves as a data-level regularizer by artificially expanding the diversity of the training distribution. For Vit, which lack the inductive biases (such as translation invariance) inherent in Convolutional Neural Networks, sophisticated augmentation is often critical for performance. In this study, we evaluate three progressively intensive augmentation strategies to determine their efficacy in the fine-tuning regime.
+
+\subsubsection{RandAugment and Random Erasing}
+
+The first strategy focuses on individual image transformations and local pixel-level perturbations. We employ RandAugment \citep{cubuk2020randaugment}, a simplified and automated augmentation policy. We use the configuration rand-m9-mstd0.5-inc1, which applies a sequence of $N$ transformations with a magnitude of $M=9$. To further improve robustness against occlusions, we integrate Random Erasing \citep{zhong2020random} with a probability of $0.25$ (re\_prob=0.25) in pixel mode, where random rectangular regions are replaced with random noise.
+
+\subsubsection{Mixup and Cutmix}
+
+The second strategy explores regional and label-level regularization through Mixup \citep{zhang2018mixup} and Cutmix \citep{yun2019cutmix}. These methods force the model to behave linearly between training samples, effectively smoothing the decision boundaries. We implement a composite Mixup function with the following parameters:
+
+\textbf{Mixup:} Controlled by $\alpha=0.2$, creating convex combinations of pairs of images.
+
+\textbf{Cutmix:} Controlled by $\alpha=1.0$, replacing random patches of one image with another.
+
+\textbf{Execution:} A switching probability of $0.5$ determines whether Mixup or Cutmix is applied to a given batch, with an overall execution probability of $0.5$.
+
+\subsubsection{Combined Strategy}
+
+The final strategy evaluates the synergistic effect of both individual and multi-sample augmentations. By combining RandAugment, Random Erasing, Mixup, and Cutmix, we create a highly regularized training pipeline. This setup aims to test whether the benefits of these methods are additive or if the resulting complexity leads to underfitting, especially given the relatively small scale of the CIFAR-100 dataset and the pre-trained nature of the ViT-Tiny backbone.
 
 \subsection{Label Smoothing and Early Stopping}
 \label{sec:method:lsearly}
@@ -79,13 +110,11 @@ are therefore reported together but analyzed separately in the
 experiments.
 
 \paragraph{Label smoothing.}
-\draftnote{Member 5: state the label-smoothing sweep
-$\epsilon \in \{0,\,0.05,\,0.1,\,0.2\}$ and explain in 2--3 sentences why
-it is an output-level regularizer worth comparing against parameter- and
-data-level methods.}
+We study label smoothing as an output-level regularizer by replacing the hard one-hot target distribution with a softened target distribution. In our final run, we use a label-smoothing value of $\epsilon = 0.1$. This setting reduces the model's tendency to assign all probability mass to one class, which can help prevent over-confident predictions and improve generalization. Unlike weight decay or dropout, label smoothing does not directly constrain the parameters or hidden activations; instead, it regularizes the supervision signal seen by the classifier.
 
 \paragraph{Early stopping.}
-\draftnote{Member 5: state the patience sweep
-$\{5,\,10,\,15\}$, the monitored metric, and the tolerance rule. Explain
-why early stopping is treated as a training-process regularizer rather
-than just a convenience trick.}
+We also use early stopping as a training-process regularizer. The monitored metric is validation accuracy, and the best checkpoint is selected whenever validation accuracy improves. In our implementation, the patience value is set to 25 epochs, meaning that training would stop if validation accuracy failed to improve for 25 consecutive epochs. Early stopping is treated as a regularizer because it controls how long the model is allowed to fit the training set, rather than merely serving as a computational shortcut.
+
+\subsection{Layer-wise Learning Rate Decay}
+\label{sec:method:llrd}
+We also apply layer-wise learning rate decay (LLRD) during fine-tuning so that different parts of the pretrained ViT are updated at different speeds. The main idea is simple: lower layers are assigned smaller learning rates, while higher layers and the classification head use larger learning rates. This design follows the common intuition that early layers already contain more general visual features and therefore should change less during transfer, whereas later layers need to adapt more to the target task \citep{dong2022exploring,liu2022convnext}. In our implementation, the classifier head uses the base learning rate, and the learning rate of each lower transformer block is reduced by a fixed decay factor when moving toward the input side. This setting keeps the model and data unchanged, and only modifies how the pretrained backbone is optimized during fine-tuning.
