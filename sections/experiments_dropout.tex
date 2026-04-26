@@ -1,7 +1,6 @@
-\subsection{Dropout Results}
+\subsection{Dropout}
 \label{sec:dropout}
 
-% Owner: Member 3. Bullet-level skeleton; expand to ~1 page.
 
 \paragraph{Experiment focus.}
 We evaluate the dropout variants defined in
@@ -9,13 +8,8 @@ We evaluate the dropout variants defined in
 \cref{sec:exp:training,sec:exp:eval}. Only the dropout placement and
 rate vary across runs. Overall, the results from the 30-epoch training run generally outperformed those from the 100-epoch run, indicating that longer training leads to overfitting; therefore, we primarily analyze the generalization performance under the 100-epoch setting.
 
-\paragraph{Results summary.} For standard Dropout, as the drop rate increases, the train-val gap decreases significantly (10.67 → 8.98 pp), but test accuracy peaks at a drop rate of 0.3 (82.90\%), indicating that overly strong regularization does not necessarily lead to better test performance. In contrast, DropPath demonstrates the most stable performance, achieving both the highest test accuracy (83.56\%) and the lowest gap (4.64 pp) at 100 epochs. R-Drop yields a modest improvement (82.94\%) through consistency constraints. Attention Dropout and Patch Dropout show limited gains, with best test accuracies of 82.34\% and 82.29\%, respectively.
 
-\paragraph{Discussion.}Overall, dropout-based regularization is effective: all methods improve test performance over the baseline (79.65\%), with DropPath achieving the largest gain and the smallest gap, indicating superior generalization. This advantage is rooted in the structural properties of ViT. Unlike CNNs, ViT layers exhibit more uniform representations and rely heavily on residual connections for feature propagation~\cite{raghu2021vision}. While standard Dropout perturbs local features, DropPath directly regularizes residual pathways, altering effective depth and information flow, and thus more effectively mitigates overfitting.
-
-In terms of parameter selection, moderate regularization is generally more effective. Standard Dropout peaks at a rate of 0.3, while larger rates provide no further gains. Attention Dropout and Patch Dropout show limited improvements: the former is less sensitive to local perturbations due to global self-attention, and the latter is robust to partial patch removal. Consequently, both methods contribute less to improving generalization.
-
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
 \small
 \caption{Effect of dropout rate. The 100-epoch results are the main setting, while 30-epoch results serve as a short-horizon reference.}
@@ -48,7 +42,7 @@ Drop rate
 }
 \end{table}
 
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
 \small
 \caption{Effect of DropPath rate.}
@@ -81,7 +75,7 @@ DropPath
 }
 \end{table}
 
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
 \small
 \caption{Effect of R-Drop.}
@@ -111,7 +105,7 @@ Drop rate
 }
 \end{table}
 
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
 \small
 \caption{Effect of attention dropout rate.}
@@ -143,7 +137,7 @@ Drop rate
 }
 \end{table}
 
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
 \small
 \caption{Effect of patch dropout rate.}
@@ -172,3 +166,11 @@ Drop rate
 \end{tabular}
 }
 \end{table}
+
+% Owner: Member 3. Bullet-level skeleton; expand to ~1 page.
+
+\paragraph{Results summary.} For standard Dropout, as the drop rate increases, the train-val gap decreases significantly (10.67 → 8.98 pp), but test accuracy peaks at a drop rate of 0.3 (82.90\%), indicating that overly strong regularization does not necessarily lead to better test performance. In contrast, DropPath demonstrates the most stable performance, achieving both the highest test accuracy (83.56\%) and the lowest gap (4.64 pp) at 100 epochs. R-Drop yields a modest improvement (82.94\%) through consistency constraints. Attention Dropout and Patch Dropout show limited gains, with best test accuracies of 82.34\% and 82.29\%, respectively.
+
+\paragraph{Discussion.}Overall, dropout-based regularization is effective: all methods improve test performance over the baseline (79.65\%), with DropPath achieving the largest gain and the smallest gap, indicating superior generalization. This advantage is rooted in the structural properties of ViT. Unlike CNNs, ViT layers exhibit more uniform representations and rely heavily on residual connections for feature propagation~\cite{raghu2021vision}. While standard Dropout perturbs local features, DropPath directly regularizes residual pathways, altering effective depth and information flow, and thus more effectively mitigates overfitting.
+
+In terms of parameter selection, moderate regularization is generally more effective. Standard Dropout peaks at a rate of 0.3, while larger rates provide no further gains. Attention Dropout and Patch Dropout show limited improvements: the former is less sensitive to local perturbations due to global self-attention, and the latter is robust to partial patch removal. Consequently, both methods contribute less to improving generalization.

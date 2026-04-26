@@ -1,5 +1,15 @@
-\subsection{Baseline Results}
+\subsection{Baseline}
 \label{sec:baseline}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/baseline30.png}\\[4pt]
+  \includegraphics[width=\linewidth]{figures/baseline100.png}
+  \caption{Training and validation loss and accuracy for the baseline
+  ViT-Tiny/16 on CIFAR-100 under two training budgets: 30 epochs (top)
+  and 100 epochs (bottom).}
+  \label{fig:baseline-curves}
+\end{figure}
 
 \paragraph{Reference run.}
 We evaluate the baseline method defined in \cref{sec:method:baseline}
@@ -13,15 +23,6 @@ at epoch \textbf{74}, with a validation loss of \textbf{0.9317}. Using
 the checkpoint from this epoch, the model achieves a test accuracy of
 \textbf{79.65\%}. These results are used as the reference values in the
 later method comparisons.
-
-\begin{figure}[!htbp]
-  \centering
-  % \includegraphics[width=0.85\linewidth]{baseline_curves.png}
-  \fbox{\rule{0pt}{4cm}\rule{0.8\linewidth}{0pt}}
-  \caption{Baseline ViT-Tiny/16 on CIFAR-100: training and validation
-  loss and accuracy across 100 epochs.}
-  \label{fig:baseline-curves}
-\end{figure}
 
 \paragraph{Discussion.}
 After epoch 74, the validation accuracy drops slightly instead of

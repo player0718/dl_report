@@ -1,10 +1,17 @@
-\subsection{Data Augmentation Results}
+\subsection{Data Augmentation}
 \label{sec:augmentation}
 
-% Owner: Member 4. Bullet-level skeleton; expand to ~1--1.5 pages
-% (this section can be the most visual one).
 
-\begin{table}[t]
+
+\paragraph{Experiment focus.}
+We evaluate the augmentation suites from \cref{sec:method:aug} to quantify their impact on ViT-Tiny's generalization. Since ViTs lack CNN-like inductive biases, they overfit easily on CIFAR-100. This experiment scales training difficulty from pixel-level noise (RandAugment+RE) to manifold smoothing (Mixup+Cutmix) and a Combined approach, holding all other optimization factors constant.
+
+\paragraph{Results.}
+
+As summarized in \cref{tab:data_aug}, data-level regularization yields the most substantial performance gains in this study. The Mixup + Cutmix strategy emerged as the top performer, achieving a peak test accuracy of 85.72\% (30 epochs), outperforming the baseline by 3.16 pp at the 100-epoch horizon. While RandAugment + RE effectively closed the generalization gap to near zero ($0.029$ pp), the Combined strategy pushed the model into an "over-regularized" regime, evidenced by a significant negative gap (-9.073 pp). Although the Combined approach remains robust, its slight performance decay relative to Mixup + Cutmix suggests a threshold where augmentation intensity begins to impede learning.
+
+
+\begin{table}[!hp]
   \centering
   \small
   \caption{Effect of different data augmentation strategies.}
@@ -35,17 +42,11 @@
   }
 \end{table}
 
-
-\paragraph{Experiment focus.}
-We evaluate the augmentation suites from \cref{sec:method:aug} to quantify their impact on ViT-Tiny's generalization. Since ViTs lack CNN-like inductive biases, they overfit easily on CIFAR-100. This experiment scales training difficulty from pixel-level noise (RandAugment+RE) to manifold smoothing (Mixup+Cutmix) and a Combined approach, holding all other optimization factors constant.
-
-\paragraph{Results.}
-
-As summarized in \cref{tab:data_aug}, data-level regularization yields the most substantial performance gains in this study. The Mixup + Cutmix strategy emerged as the top performer, achieving a peak test accuracy of 85.72\% (30 epochs), outperforming the baseline by 3.16 pp at the 100-epoch horizon. While RandAugment + RE effectively closed the generalization gap to near zero ($0.029$ pp), the Combined strategy pushed the model into an "over-regularized" regime, evidenced by a significant negative gap (-9.073 pp). Although the Combined approach remains robust, its slight performance decay relative to Mixup + Cutmix suggests a threshold where augmentation intensity begins to impede learning.
-
 \paragraph{Discussion.}
 \label{sec:aug:discussion}
 
 The efficacy of these methods stems from their ability to compensate for ViT's lack of inductive biases (e.g., locality and translation invariance). Mixup and Cutmix are particularly effective as they force the attention mechanism to learn global semantic relationships from partial or blended patches, effectively smoothing the decision manifold.
 
 The performance drop and extreme negative gap observed in the Combined strategy highlight a critical trade-off between regularization and model capacity. For the parameter-constrained ViT-Tiny, stacking multiple aggressive augmentations likely induces excessive image distortion. This "information loss" makes the training task disproportionately harder than the test distribution, leading to slight underfitting. These findings suggest that for small-scale backbones, a more effective synergy might be achieved by reducing the intensity of individual augmentations (e.g., lower magnitude or alpha values) when combining them, thereby preserving sufficient signal integrity for the model to converge optimally.
+
+

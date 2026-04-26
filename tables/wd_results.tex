@@ -8,27 +8,27 @@
   \caption{Effect of AdamW weight-decay strength $\lambda$ on
   ViT-Tiny/16 fine-tuned on CIFAR-100. The 100-epoch sweep is the main
   result; the original 30-epoch sweep is retained as a supplemental
-  short-horizon reference. Best values within the 100-epoch columns are
-  bolded.}
+  short-horizon reference.}
   \label{tab:wd}
   \resizebox{\columnwidth}{!}{%
-  \begin{tabular}{lccccc}
+  \begin{tabular}{lcccccc}
     \toprule
     Weight decay $\lambda$
       & \multicolumn{3}{c}{100 epochs}
-      & \multicolumn{2}{c}{30 epochs} \\
-    \cmidrule(lr){2-4}\cmidrule(lr){5-6}
+      & \multicolumn{3}{c}{30 epochs} \\
+    \cmidrule(lr){2-4}\cmidrule(lr){5-7}
       & Best val (\%) $\uparrow$
       & Test (\%) $\uparrow$
       & Gap (pp) $\downarrow$
       & Best val (\%) $\uparrow$
-      & Test (\%) $\uparrow$ \\
+      & Test (\%) $\uparrow$
+      & Gap (pp) $\downarrow$ \\
     \midrule
-    $0$                   & 81.90 & 81.81 & 11.23 & 84.50 & 84.75 \\
-    $10^{-4}$             & 82.20 & 82.21 & 11.49 & 84.38 & 84.31 \\
-    $10^{-2}$             & 82.16 & 82.17 & 11.55 & 84.28 & 84.74 \\
-    $5 \times 10^{-2}$    & \textbf{82.56} & \textbf{82.23} & \textbf{11.02} & 83.88 & 84.05 \\
-    $10^{-1}$             & 81.44 & 81.25 & 11.36 & 84.56 & 84.33 \\
+    $0$                   & 81.90 & 81.81 & 11.23 & 82.78 & 82.95 & \textbf{3.77} \\
+    $10^{-4}$             & 82.20 & 82.21 & 11.49 & 84.38 & 84.31 & 5.28 \\
+    $10^{-2}$             & 82.16 & 82.17 & 11.55 & 84.28 & \textbf{84.74} & 5.54 \\
+    $5 \times 10^{-2}$    & \textbf{82.56} & \textbf{82.23} & \textbf{11.02} & 83.88 & 84.05 & 5.54 \\
+    $10^{-1}$             & 81.44 & 81.25 & 11.36 & \textbf{84.56} & 84.33 & 4.97 \\
     \bottomrule
   \end{tabular}
   }

@@ -1,29 +1,27 @@
-\subsection{Weight Decay Results}
+\subsection{Weight Decay}
 \label{sec:wd}
 
-% Owner: Member 2. Target 1.5--2 pages.
 
-\paragraph{Experiment focus.}
-This subsection reports the results of the weight-decay sweep defined in
-\cref{sec:method:wd}, evaluated under the shared protocol of
-\cref{sec:exp:training,sec:exp:eval}. The only variable that changes is
-the AdamW decoupled weight-decay coefficient $\lambda$. Because the group
-baseline was later standardized to 100 epochs, we treat the 100-epoch
-sweep as the main result and keep the original 30-epoch sweep as a
-short-horizon reference.
 
-\paragraph{Aggregate numbers.}
-\Cref{tab:wd} reports best validation accuracy, final test accuracy, and
-the train--val gap at the best-validation epoch for the 100-epoch sweep.
-The table also includes the original 30-epoch validation and test
-accuracy so that the effect of extending the training horizon is visible.
+
+
 
 \input{tables/wd_results}
 
-\paragraph{Learning curves.}
-\Cref{fig:wd-curves} shows the training and validation trajectories
-for the full sweep. The figure reports optimization behavior over the
-entire 100-epoch schedule for all five weight-decay settings.
+\paragraph{Results.}
+As shown in \cref{tab:wd}, weight decay gives a modest but consistent gain
+under the 100-epoch protocol. The no-decay baseline reaches $81.90\%$ best
+validation accuracy and $81.81\%$ test accuracy, while the best setting,
+$\lambda=5\times10^{-2}$, improves these values to $82.56\%$ and
+$82.23\%$, respectively, with the smallest 100-epoch train--val gap
+($11.02$ pp). The neighboring settings $\lambda=10^{-4}$ and
+$\lambda=10^{-2}$ perform similarly, reaching $82.21\%$ and $82.17\%$ test
+accuracy, whereas the strongest coefficient, $\lambda=10^{-1}$, drops to
+$81.25\%$. In the 30-epoch reference runs, the best test accuracy is
+obtained by $\lambda=10^{-2}$ ($84.74\%$), while $\lambda=10^{-1}$ gives
+the highest validation accuracy ($84.56\%$); all 30-epoch gaps remain much
+smaller than those observed after 100 epochs.
+
 
 \begin{figure}[t]
   \centering
@@ -46,14 +44,7 @@ entire 100-epoch schedule for all five weight-decay settings.
   \label{fig:wd-curves}
 \end{figure}
 
-\paragraph{Train--val gap.}
-\Cref{fig:wd-gap} plots the train--val accuracy gap as a function of
-training epoch for each $\lambda$. A flat or shrinking gap at large
-$\lambda$ is direct evidence that weight decay is constraining
-memorization rather than just trading capacity for regularization. In the
-100-epoch runs, all settings eventually develop a large gap of roughly
-11 percentage points, indicating substantial overfitting under the longer
-fine-tuning horizon.
+
 
 \begin{figure}[t]
   \centering
@@ -64,11 +55,7 @@ fine-tuning horizon.
   \label{fig:wd-gap}
 \end{figure}
 
-\paragraph{Best validation accuracy as a function of $\lambda$.}
-\Cref{fig:wd-best-val} summarizes the sweep by plotting best
-validation accuracy against $\lambda$ on a log-x axis. This is the
-single plot that answers ``what coefficient should I pick?'' under the
-100-epoch protocol.
+
 
 \begin{figure}[t]
   \centering
@@ -78,40 +65,17 @@ single plot that answers ``what coefficient should I pick?'' under the
   \label{fig:wd-best-val}
 \end{figure}
 
-\paragraph{Results summary.}
-Under the 100-epoch protocol, moderate weight decay provides a small but
-consistent improvement over the no-decay control. The baseline
-$\lambda=0$ reaches $81.90\%$ best validation accuracy and $81.81\%$ test
-accuracy. The best setting is $\lambda=5\times10^{-2}$, which reaches
-$82.56\%$ best validation accuracy and $82.23\%$ test accuracy, improving
-test accuracy by $0.42$ percentage points over the no-decay control.
-The nearby settings $\lambda=10^{-4}$ and $\lambda=10^{-2}$ also improve
-test accuracy by $0.40$ and $0.36$ percentage points, respectively. In
-contrast, $\lambda=10^{-1}$ drops to $81.25\%$ test accuracy, suggesting
-that overly strong decay begins to suppress useful model capacity.
-
-The 30-epoch sweep gives a different short-horizon picture: the
-no-decay control obtains the highest test accuracy ($84.75\%$), while
-nonzero decay values remain within a narrow band. This discrepancy
-should not be interpreted as a contradiction. Changing the total number
-of epochs also changes the cosine learning-rate trajectory
-($T_{\max}=E-3$ after the 3-epoch warmup), so the 100-epoch run is not
-merely the 30-epoch model trained for 70 additional epochs. Instead, the
-longer schedule exposes stronger overfitting, as shown by the train--val
-gap increasing from roughly 5 percentage points in the 30-epoch runs to
-roughly 11 percentage points in the 100-epoch runs. In this longer
-regime, moderate weight decay becomes mildly beneficial but still not a
-dominant source of generalization improvement.
-
-\paragraph{Limitations.}
-\label{sec:wd:limitations}
-These runs use a single seed per configuration, so sub-$0.5$ point
-differences should be interpreted cautiously because they may fall
-within run-to-run noise. In addition, the study fine-tunes from an
-ImageNet-pretrained checkpoint rather than training from scratch, so the
-conclusions do not necessarily transfer to the longer, more strongly
-regularized training regime often used for DeiT-style recipes
-\citep{touvron2021deit}. The small absolute spread across neighboring
-$\lambda$ values is therefore itself a result: within this controlled
-fine-tuning setup, weight decay is a weak but measurable regularization
-knob rather than a dominant factor.
+\paragraph{Discussion.}
+These results suggest that AdamW weight decay is helpful, but it is not a
+sufficient regularizer by itself. The 100-epoch learning curves in
+\cref{fig:wd-curves,fig:wd-gap} show that the longer schedule allows the
+model to keep fitting the training set, so all settings eventually develop
+an approximately 11-point train--validation gap. Moderate decay therefore
+acts mainly as a capacity constraint: $\lambda=5\times10^{-2}$ provides the
+best balance between suppressing overfitting and preserving useful
+representations, while $\lambda=10^{-1}$ begins to reduce model capacity.
+The 30-epoch results should be interpreted as a short-horizon comparison
+rather than a direct contradiction, because changing the epoch budget also
+changes the cosine learning-rate trajectory. Overall, weight decay provides
+a small improvement in the longer fine-tuning regime, but larger
+generalization gains require stronger regularization mechanisms.
