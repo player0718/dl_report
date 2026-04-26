@@ -2,13 +2,9 @@
 \label{sec:augmentation}
 
 
-
-\paragraph{Experiment focus.}
-We evaluate the augmentation suites from \cref{sec:method:aug} to quantify their impact on ViT-Tiny's generalization. Since ViTs lack CNN-like inductive biases, they overfit easily on CIFAR-100. This experiment scales training difficulty from pixel-level noise (RandAugment+RE) to manifold smoothing (Mixup+Cutmix) and a Combined approach, holding all other optimization factors constant.
-
 \paragraph{Results.}
 
-As summarized in \cref{tab:data_aug}, data-level regularization yields the most substantial performance gains in this study. The Mixup + Cutmix strategy emerged as the top performer, achieving a peak test accuracy of 85.72\% (30 epochs), outperforming the baseline by 3.16 pp at the 100-epoch horizon. While RandAugment + RE effectively closed the generalization gap to near zero ($0.029$ pp), the Combined strategy pushed the model into an "over-regularized" regime, evidenced by a significant negative gap (-9.073 pp). Although the Combined approach remains robust, its slight performance decay relative to Mixup + Cutmix suggests a threshold where augmentation intensity begins to impede learning.
+The three augmentation settings represent different forms of data-level regularization. RandAugment + Random Erasing applies image-level perturbations, Mixup + CutMix trains on mixed samples and soft labels, and the Combined setting uses both. As summarized in \cref{tab:data_aug}, Mixup + CutMix gives the strongest result among the augmentation methods: it improves the 100-epoch test accuracy from the clean baseline of 79.65\% to 84.97\%, and it reaches 85.72\% test accuracy under the 30-epoch schedule. RandAugment + Random Erasing also improves test accuracy and gives a much smaller measured train--validation gap. The Combined setting remains competitive, but its 100-epoch test accuracy is slightly lower than Mixup + CutMix, suggesting that stacking all augmentations is not necessarily better for this small backbone.
 
 
 \begin{table}[!htbp]
@@ -19,7 +15,7 @@ As summarized in \cref{tab:data_aug}, data-level regularization yields the most 
   \resizebox{\columnwidth}{!}{%
   \begin{tabular}{lccccc}
     \toprule
-    Augmentation Methods $\lambda$
+    Augmentation method
       & \multicolumn{3}{c}{100 epochs}
       & \multicolumn{2}{c}{30 epochs} \\
     \cmidrule(lr){2-4}\cmidrule(lr){5-6}
@@ -29,8 +25,8 @@ As summarized in \cref{tab:data_aug}, data-level regularization yields the most 
       & Best val (\%) $\uparrow$
       & Test (\%) $\uparrow$ \\
     \midrule
-    Baseline& 81.90 & 81.81 & 11.23 & 84.50 & 
-84.75 \\
+    Baseline& 80.42 & 79.65 & -- & 82.72 & 
+82.95 \\
     RandAugment + RandErasing& 84.10& 83.56& 0.029& 85.12& 85.25
 \\
     Mixup + Cutmix& \textbf{85.06}& \textbf{84.97}& 1.249& \textbf{85.66}& \textbf{85.72}
@@ -45,8 +41,8 @@ As summarized in \cref{tab:data_aug}, data-level regularization yields the most 
 \paragraph{Discussion.}
 \label{sec:aug:discussion}
 
-The efficacy of these methods stems from their ability to compensate for ViT's lack of inductive biases (e.g., locality and translation invariance). Mixup and Cutmix are particularly effective as they force the attention mechanism to learn global semantic relationships from partial or blended patches, effectively smoothing the decision manifold.
+These results are consistent with the fact that ViTs rely less on built-in locality and translation equivariance than CNNs. Data augmentation can partially compensate for this by exposing the model to a wider range of image transformations and label combinations. Mixup and CutMix likely help because they create softer decision boundaries and force the classifier to rely on class-discriminative evidence even when images are partially mixed.
 
-The performance drop and extreme negative gap observed in the Combined strategy highlight a critical trade-off between regularization and model capacity. For the parameter-constrained ViT-Tiny, stacking multiple aggressive augmentations likely induces excessive image distortion. This "information loss" makes the training task disproportionately harder than the test distribution, leading to slight underfitting. These findings suggest that for small-scale backbones, a more effective synergy might be achieved by reducing the intensity of individual augmentations (e.g., lower magnitude or alpha values) when combining them, thereby preserving sufficient signal integrity for the model to converge optimally.
+The lower test accuracy and negative measured gap of the Combined setting suggest that this recipe may be too strong for ViT-Tiny. One likely explanation is that stacking several aggressive augmentations removes too much class-relevant visual information from some training samples. For small backbones, combining augmentations may therefore require weaker individual settings, such as lower augmentation magnitude or smaller mixing coefficients, so that the training images remain informative.
 
 

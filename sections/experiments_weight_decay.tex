@@ -8,7 +8,7 @@
 \paragraph{Results.}
 As shown in \cref{tab:wd}, moderate AdamW weight decay yields a small but
 measurable improvement under the 100-epoch protocol, whereas the strongest
-coefficient degrades accuracy. The no-decay baseline reaches $81.90\%$
+coefficient degrades accuracy. The no-decay control in this sweep reaches $81.90\%$
 best validation accuracy and $81.81\%$ test accuracy. The best setting,
 $\lambda=5\times10^{-2}$, improves these values to $82.56\%$ and
 $82.23\%$, respectively, corresponding to gains of $0.66$ pp in validation
@@ -59,7 +59,7 @@ after 100 epochs.
   and final test accuracy; faint bars show the train--validation gap at the
   best validation epoch. The shaded region marks the moderate-decay plateau
   ($\lambda\in[10^{-4},5\times10^{-2}]$), and the dotted line marks the
-  no-decay test baseline.}
+  no-decay test control.}
   \label{fig:wd-summary}
 \end{figure}
 
