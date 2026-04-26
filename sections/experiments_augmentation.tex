@@ -11,7 +11,7 @@ We evaluate the augmentation suites from \cref{sec:method:aug} to quantify their
 As summarized in \cref{tab:data_aug}, data-level regularization yields the most substantial performance gains in this study. The Mixup + Cutmix strategy emerged as the top performer, achieving a peak test accuracy of 85.72\% (30 epochs), outperforming the baseline by 3.16 pp at the 100-epoch horizon. While RandAugment + RE effectively closed the generalization gap to near zero ($0.029$ pp), the Combined strategy pushed the model into an "over-regularized" regime, evidenced by a significant negative gap (-9.073 pp). Although the Combined approach remains robust, its slight performance decay relative to Mixup + Cutmix suggests a threshold where augmentation intensity begins to impede learning.
 
 
-\begin{table}[!hp]
+\begin{table}[!htbp]
   \centering
   \small
   \caption{Effect of different data augmentation strategies.}

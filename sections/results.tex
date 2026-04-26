@@ -13,20 +13,33 @@
 \subsection{LLRD + Staged Fine-tuning Results}
 \label{sec:llrd}
 
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/llrd_staged_finetuning.png}
+  \caption{LLRD with staged fine-tuning: training curves and learning-rate schedule.}
+  \label{fig:llrd-staged-curves}
+\end{figure}
+
 We next evaluate the proposed optimization strategy based on layer-wise
 learning rate decay (LLRD) and staged fine-tuning. Under the same
-backbone, dataset, and training budget as the baseline, this method
-achieves a best validation accuracy of \textbf{86.06\%} at epoch
+backbone, dataset, and 100-epoch training budget as the baseline, this
+method achieves a best validation accuracy of \textbf{86.06\%} at epoch
 \textbf{22}, with a corresponding test accuracy of \textbf{85.33\%}.
-Compared with the baseline result of 81.86\% validation accuracy, this
-gives an improvement of \textbf{4.20} percentage points.
+Compared with the 100-epoch baseline validation accuracy of
+\textbf{80.42\%}, this gives an improvement of \textbf{5.64} percentage
+points. The test accuracy also improves from \textbf{79.65\%} to
+\textbf{85.33\%}, corresponding to a gain of \textbf{5.68} percentage
+points.
 
-The training curves show that this method improves much faster after the
-model is switched from head-only training to full-model fine-tuning.
-Validation accuracy rises quickly in the early part of Stage 2, then
-reaches its best result around epoch 22. After that point, training
-accuracy continues to increase while validation accuracy stops
-improving, which suggests the start of overfitting. This result shows
-that LLRD with staged fine-tuning is an effective and stable way to
-adapt a pretrained ViT to CIFAR-100, especially under a limited
-training budget.
+As shown in \cref{fig:llrd-staged-curves}, the training curves indicate
+that the method improves rapidly after the model is switched from
+head-only training to full-model fine-tuning. Validation accuracy rises
+sharply in the early part of Stage 2 and reaches its best result around
+epoch 22. After that point, training accuracy continues to increase,
+while validation accuracy saturates and fluctuates slightly, suggesting
+the onset of mild overfitting. Meanwhile, the validation loss remains
+relatively stable after the stage switch, which indicates that the
+staged schedule avoids severe instability during full-model fine-tuning.
+Overall, these results show that LLRD with staged fine-tuning provides a
+substantial improvement over the 100-epoch baseline and is an effective
+way to adapt a pretrained ViT to CIFAR-100.

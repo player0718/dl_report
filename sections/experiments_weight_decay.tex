@@ -22,23 +22,6 @@ reference runs, the best test accuracy is obtained by $\lambda=10^{-2}$
 ($84.56\%$); all 30-epoch gaps remain much smaller than those observed
 after 100 epochs.
 
-\paragraph{Discussion.}
-These results suggest that weight decay mainly shifts the accuracy level
-rather than eliminating the generalization gap. Across the 100-epoch
-sweep, the train--validation gap remains within $11.02$--$11.55$ pp
-(\cref{fig:wd-summary}, right axis), even though the best test accuracy
-changes across $\lambda$. This pattern indicates that weight decay alone
-only weakly controls the overfitting observed in the longer schedule. The drop at $\lambda=10^{-1}$ is
-consistent with over-regularization: compared with
-$\lambda=5\times10^{-2}$, it loses $1.12$ pp in best validation accuracy
-and $0.98$ pp in test accuracy while still retaining a large
-train--validation gap. The 30-epoch results should therefore be interpreted
-as a short-horizon reference rather than a direct contradiction, because
-changing the epoch budget also changes the cosine learning-rate trajectory.
-Overall, weight decay provides a limited improvement in the longer
-fine-tuning regime and motivates comparison with other regularization
-mechanisms.
-
 \begin{figure}[t]
   \centering
   \begin{minipage}[t]{0.49\linewidth}
@@ -69,7 +52,7 @@ mechanisms.
   \label{fig:wd-gap}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.78\linewidth]{wd_summary.png}
   \caption{100-epoch weight-decay sweep summary. Lines show best validation
@@ -79,3 +62,20 @@ mechanisms.
   no-decay test baseline.}
   \label{fig:wd-summary}
 \end{figure}
+
+\paragraph{Discussion.}
+These results suggest that weight decay mainly shifts the accuracy level
+rather than eliminating the generalization gap. Across the 100-epoch
+sweep, the train--validation gap remains within $11.02$--$11.55$ pp
+(\cref{fig:wd-summary}, right axis), even though the best test accuracy
+changes across $\lambda$. This pattern indicates that weight decay alone
+only weakly controls the overfitting observed in the longer schedule. The drop at $\lambda=10^{-1}$ is
+consistent with over-regularization: compared with
+$\lambda=5\times10^{-2}$, it loses $1.12$ pp in best validation accuracy
+and $0.98$ pp in test accuracy while still retaining a large
+train--validation gap. The 30-epoch results should therefore be interpreted
+as a short-horizon reference rather than a direct contradiction, because
+changing the epoch budget also changes the cosine learning-rate trajectory.
+Overall, weight decay provides a limited improvement in the longer
+fine-tuning regime and motivates comparison with other regularization
+mechanisms.

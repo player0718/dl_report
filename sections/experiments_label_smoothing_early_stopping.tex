@@ -5,7 +5,7 @@
 
 \paragraph{Experiment focus.}
 This subsection reports the result of combining label smoothing and early stopping under the shared ViT-Tiny/16 fine-tuning protocol. The model, dataset split, optimizer, learning-rate schedule, batch size, and evaluation rule remain the same as in the shared protocol. The only changes are that label smoothing is enabled with $\epsilon = 0.1$, and the best checkpoint is selected using validation accuracy with an early-stopping patience of 25 epochs.
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
 \small
 \caption{Effect of label smoothing and early stopping on ViT-Tiny/16.}
