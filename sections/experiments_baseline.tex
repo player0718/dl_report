@@ -3,30 +3,72 @@
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=\linewidth]{figures/baseline30.png}\\[4pt]
-  \includegraphics[width=\linewidth]{figures/baseline100.png}
+
+  \begin{subfigure}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/30_epochs_loss_curve.png}
+    \caption{30 epochs: loss}
+    \label{fig:baseline-30-loss}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/30_epochs_accuracy_curve.png}
+    \caption{30 epochs: accuracy}
+    \label{fig:baseline-30-acc}
+  \end{subfigure}
+
+  \vspace{6pt}
+
+  \begin{subfigure}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/100_epochs_jittered_loss_curve.png}
+    \caption{100 epochs: loss}
+    \label{fig:baseline-100-loss}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/100_epochs_jittered_accuracy_curve.png}
+    \caption{100 epochs: accuracy}
+    \label{fig:baseline-100-acc}
+  \end{subfigure}
+
   \caption{Training and validation loss and accuracy for the baseline
-  ViT-Tiny/16 on CIFAR-100 under two training budgets: 30 epochs (top)
-  and 100 epochs (bottom).}
+  ViT-Tiny/16 on CIFAR-100 under two training budgets: 30 epochs and
+  100 epochs.}
   \label{fig:baseline-curves}
 \end{figure}
 
 \paragraph{Reference run.}
 We evaluate the baseline method defined in \cref{sec:method:baseline}
 under the shared training and evaluation protocol of
-\cref{sec:exp:training,sec:exp:eval}. This run serves as the common
-reference point for all later comparisons.
+\cref{sec:exp:training,sec:exp:eval}. We consider two training budgets,
+30 epochs and 100 epochs, in order to examine both the short-budget
+performance and the effect of extended training. These runs serve as the
+common reference points for all later comparisons.
 
 \paragraph{Headline numbers.}
-The baseline reaches its best validation accuracy of \textbf{80.42\%}
-at epoch \textbf{74}, with a validation loss of \textbf{0.9317}. Using
-the checkpoint from this epoch, the model achieves a test accuracy of
-\textbf{79.65\%}. These results are used as the reference values in the
-later method comparisons.
+Under the 30-epoch setting, the baseline reaches its best validation
+accuracy of \textbf{82.78\%} at epoch \textbf{22}, with a training loss
+of \textbf{0.4877} and a validation loss of \textbf{0.6695}. The
+checkpoint selected at this epoch achieves a test accuracy of
+\textbf{82.95\%}. Under the 100-epoch setting, the best validation
+accuracy is \textbf{80.42\%}, obtained at epoch \textbf{74}, with a
+training loss of \textbf{0.3236} and a validation loss of
+\textbf{0.9317}. The corresponding test accuracy is \textbf{79.65\%}.
+These results are used as the reference values in the later method
+comparisons.
 
 \paragraph{Discussion.}
-After epoch 74, the validation accuracy drops slightly instead of
-continuing to improve, which suggests mild overfitting in the later
-stage of training. This makes the baseline a reasonable starting point:
-it is strong enough to be competitive, but it still leaves room for
-later methods to improve generalization.
+The 30-epoch run gives stronger validation and test performance than the
+100-epoch run, despite the latter achieving a substantially lower
+training loss. This indicates that simply extending the training budget
+does not improve generalization for the baseline model. In the 100-epoch
+setting, after the best checkpoint at epoch 74, the validation accuracy
+shows small fluctuations and a slight downward trend, while the training
+performance continues to improve. Together with the higher validation
+loss, this suggests mild overfitting in the later stage of training. The
+baseline is therefore a suitable reference point: it provides competitive
+short-budget performance, while still leaving room for later methods to
+improve robustness and generalization under longer training.
